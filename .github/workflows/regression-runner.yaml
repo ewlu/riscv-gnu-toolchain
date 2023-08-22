@@ -234,7 +234,7 @@ jobs:
           $PARSE_EXISTING_REPORT | tee gcc-${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.gcchash }}-${{ inputs.multilib }}-report.log
 
       - name: Save singlelib results
-        if: inputs.multilib != "multilib"
+        if: inputs.multilib != 'multilib'
         run: |
           if [ "${{ inputs.mode }}" == "newlib" ]; then
             PARSE_EXISTING_REPORT="./scripts/testsuite-filter gcc newlib test/allowlist `find build/build-gcc-newlib-stage2/gcc/testsuite/ -name *.sum |paste -sd "," -`"
@@ -252,7 +252,7 @@ jobs:
           retention-days: 90
 
       - name: Upload singlelib results artifact
-        if: inputs.multilib != "multilib"
+        if: inputs.multilib != 'multilib'
         uses: actions/upload-artifact@v3
         with:
           name: gcc-${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.gcchash }}-singlelib-report.log
