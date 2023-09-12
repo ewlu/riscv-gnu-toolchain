@@ -7,7 +7,7 @@ while getopts "hp:" opt; do
       echo "patch name is $patch_name"
       ;;
     ?|h)
-      echo "Usage: $(basename $0) -p <patch file> -t <target arch>"
+      echo "Usage: $(basename $0) -p <patch file>"
       exit 0
       ;;
   esac
