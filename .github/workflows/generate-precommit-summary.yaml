@@ -116,6 +116,7 @@ jobs:
         if: ${{ inputs.build_only == 'true' }}
         run: |
           rm current_logs/failed_testsuite.txt
+        continue-on-error: true
 
       - name: Make artifact zips
         run: |
