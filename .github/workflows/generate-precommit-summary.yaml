@@ -201,7 +201,7 @@ jobs:
       - name: Update issue with tot hash
         if: ${{ inputs.build_only }}
         run: |
-          echo "Failed to apply ${{ patch_name }} cleanly to baseline hash ${{ gcchash }}. Patch applied cleanly to then tiop-of-tree hash ${{ tot_hash }}" >> trimmed_issue.md
+          echo "Failed to apply ${{ inputs.patch_name }} cleanly to baseline hash ${{ inputs.gcchash }}. Patch applied cleanly to then tiop-of-tree hash ${{ inputs.tot_hash }}" >> trimmed_issue.md
           cat trimmed_issue.md
 
 
