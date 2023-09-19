@@ -13,7 +13,8 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: login vs display_login
-        echo ${{ github.event.comment.actor.login }}
-        echo ${{ github.event.comment.actor.display_login }}
-        echo ${{ github.event.comment.issue }}
+        run: |
+          echo ${{ github.event.comment.actor.login }}
+          echo ${{ github.event.comment.actor.display_login }}
+          echo ${{ github.event.comment.issue }}
 
