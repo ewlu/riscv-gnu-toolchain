@@ -14,7 +14,6 @@ jobs:
 
       - name: login vs display_login
         run: |
-          echo ${{ github.event.comment.user.login }}
-          echo ${{ github.event.comment.user.display_login }}
-          echo ${{ github.event.number }}
+          echo ${{ github.event }}
+          echo ${{ github.event.issue }}
 
