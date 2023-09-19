@@ -6,14 +6,14 @@ on:
 
 jobs:
   ping-api:
-    if: ${{ contains(github.event.comment.body, '/ping') }}
+    if: ${{ contains(github.event.comment.body, '/ping') && (github.event.comment.user.login == 'ewlu' || github.event.comment.user.login == 'patrick-rivos') }}
     runs-on: ubuntu-20.04
     environment: production
     steps:
       - uses: actions/checkout@v3
 
       - name: login vs display_login
-        echo ${{ github.event.comment.actor.login }}
-        echo ${{ github.event.comment.actor.display_login }}
-        echo ${{ github.event.comment.issue }}
+        run: |
+          echo ${{ github.event.issue.issue_number }}
+          echo ${{ github.event.issue.number }}
 
