@@ -52,7 +52,6 @@ def send(patch_id: str, desc: str, issue: str):
     print(f"post url: {url}")
     print(f"params: {params}")
 
-
 def main():
     args = parse_arguments()
     send(args.patch_id, args.description, args.issue_id)

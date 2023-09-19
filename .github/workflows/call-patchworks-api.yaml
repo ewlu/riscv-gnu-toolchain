@@ -5,8 +5,72 @@ on:
     types: [created]
 
 jobs:
-  ping-api:
-    if: ${{ contains(github.event.comment.body, '/ping') && (github.event.comment.user.login == 'ewlu' || github.event.comment.user.login == 'patrick-rivos') }}
+  get-patch-info:
+    runs-on: ubuntu-20.04
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Bump pyopenssl and crypto
+        run: |
+          sudo apt remove python3-pip
+          wget https://bootstrap.pypa.io/get-pip.py
+          sudo python3 get-pip.py
+          pip install -U pyopenssl cryptography
+          pip install pygithub requests
+
+      - name: Get patch-name
+        id: patch-name
+        run: |
+          export title=${{ github.event.issue.title }}
+          export PATCH_NAME=${title##* }
+          echo $PATCH_NAME
+          echo "patch_name=$PATCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: Download patch
+        run: |
+          mkdir temp
+          python ./scripts/download_single_artifact.py -name ${{ steps.patch-name.outputs.patch_name }}-downloaded-patches -outdir ./
+          
+      - name: Extract patch
+        run: |
+          unzip ${{ steps.patch-name.outputs.patch_name }}-downloaded-patches.zip
+
+      - name: Get patch id
+        id: patch-id
+        run: |
+          export PATCH_ID=$(tail -n 1 ./patches/${{ steps.patch-name.outputs.patch_name }})
+          echo $PATCH_ID
+          echo "patch_id=$PATCH_ID" >> $GITHUB_OUTPUT
+
+    outputs:
+      patch_name: ${{ steps.patch-name.outputs.patch_name }}
+      patch_id: ${{ steps.patch-id.outputs.patch_id }}
+
+  report-pass:
+    needs: [get-patch-info]
+    if: ${{ contains(github.event.comment.body, '/pass') && (github.event.comment.user.login == 'ewlu' || github.event.comment.user.login == 'patrick-rivos') }}
+    runs-on: ubuntu-20.04
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Bump pyopenssl and crypto
+        run: |
+          sudo apt remove python3-pip
+          wget https://bootstrap.pypa.io/get-pip.py
+          sudo python3 get-pip.py
+          pip install -U pyopenssl cryptography
+          pip install requests
+
+      - name: Report pass
+        run: |
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc 'testsuite success' -iid ${{ github.event.issue.number }}
+
+
+  report-warn:
+    needs: [get-patch-info]
+    if: ${{ contains(github.event.comment.body, '/warn') && (github.event.comment.user.login == 'ewlu' || github.event.comment.user.login == 'patrick-rivos') }}
     runs-on: ubuntu-20.04
     environment: production
     steps:
@@ -21,19 +85,27 @@ jobs:
           pip install requests
 
       - name: Report Warning
-        if: contains(github.event.issue.labels.*.name, 'build-only')
         run: |
-          echo WARN 
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc 'testsuite warning' -iid ${{ github.event.issue.number }}
+
+
+  report-error:
+    needs: [get-patch-info]
+    if: ${{ contains(github.event.comment.body, '/error') && (github.event.comment.user.login == 'ewlu' || github.event.comment.user.login == 'patrick-rivos') }}
+    runs-on: ubuntu-20.04
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Bump pyopenssl and crypto
+        run: |
+          sudo apt remove python3-pip
+          wget https://bootstrap.pypa.io/get-pip.py
+          sudo python3 get-pip.py
+          pip install -U pyopenssl cryptography
+          pip install requests
 
       - name: Report Error
-        if: contains(github.event.issue.labels.*.name, 'new-regressions')
         run: |
-          echo ERROR 
-
-      - name: Report Pass
-        if: ${{ !contains(github.event.issue.labels.*.name, 'new-regressions') && !contains(github.event.issue.labels.*.name, 'build-only')
-        run: |
-          echo PASS 
-
-        
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc 'testsuite fail' -iid ${{ github.event.issue.number }}
 
