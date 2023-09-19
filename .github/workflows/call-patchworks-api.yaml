@@ -6,7 +6,7 @@ on:
 
 jobs:
   ping-api:
-    if: ${{ contains(github.event.comment.body, '/ping') }}
+    if: ${{ contains(github.event.comment.body, '/ping') && (github.event.comment.user.login == 'ewlu' || github.event.comment.user.login == 'patrick-rivos') }}
     runs-on: ubuntu-20.04
     environment: production
     steps:
@@ -16,5 +16,5 @@ jobs:
         run: |
           echo ${{ github.event.comment.user.login }}
           echo ${{ github.event.comment.user.display_login }}
-          echo ${{ github.event.comment.issue }}
+          echo ${{ github.event.number }}
 
