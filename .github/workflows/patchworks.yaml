@@ -25,7 +25,7 @@ jobs:
           TZ=UTC date -d "@$((($(date +%s) - 1350) / 900 * 900))" '+%Y-%m-%dT%H:%M:%S' > date_older.txt
 
           mkdir patch_urls
-          mkdir patchwork_urls
+          mkdir patchworks_urls
           python scripts/create_patches_files.py -backup $(cat date_older.txt) -start $(cat date_old.txt) -end $(cat date_recent.txt)
 
       - name: List patch artifacts
@@ -37,7 +37,7 @@ jobs:
       - name: Make artifact zip
         run: |
           zip -r patch_files.zip patch_urls
-          zip -r patchworks_files.zip patchwork_urls
+          zip -r patchworks_files.zip patchworks_urls
 
       - name: Upload patch urls zip
         if: ${{ steps.list_patches.outputs.patch_list != '[]' }}
