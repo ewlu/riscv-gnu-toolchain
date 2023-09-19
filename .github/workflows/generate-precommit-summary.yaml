@@ -227,6 +227,15 @@ jobs:
           filename: trimmed_issue.md
           update_existing: true
 
-    outputs:
-      new_issue_num: ${{ steps.create-issue.outputs.number }}
+      - name: Add Build-Only Label to New Issue
+        if: ${{ inputs.build_only }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.addLabels({
+              issue_number: ${{ steps.create-issue.outputs.number }},
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['build-only']
+            })
 

@@ -12,8 +12,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: login vs display_login
+      - name: Bump pyopenssl and crypto
         run: |
-          echo ${{ github.event.issue.issue_number }}
-          echo ${{ github.event.issue.number }}
+          sudo apt remove python3-pip
+          wget https://bootstrap.pypa.io/get-pip.py
+          sudo python3 get-pip.py
+          pip install -U pyopenssl cryptography
+          pip install requests
+
+      - name: Report Warning
+        if: contains(github.event.issue.labels.*.name, 'build-only')
+        run: |
+          echo WARN 
+
+      - name: Report Error
+        if: contains(github.event.issue.labels.*.name, 'new-regressions')
+        run: |
+          echo ERROR 
+
+      - name: Report Pass
+        if: ${{ !contains(github.event.issue.labels.*.name, 'new-regressions') && !contains(github.event.issue.labels.*.name, 'build-only')
+        run: |
+          echo PASS 
+
+        
 
