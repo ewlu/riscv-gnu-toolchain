@@ -62,3 +62,14 @@ jobs:
         with:
           filename: trimmed_issue.md
           update_existing: true
+          
+      - name: Report status
+        if: ${{ steps.lint.outputs.lint_failed == 'true' }}
+        run: |
+          echo WARN
+
+      - name: Report status
+        if: ${{ steps.lint.outputs.lint_failed == 'false' }}
+        run: |
+          echo PASS
+          

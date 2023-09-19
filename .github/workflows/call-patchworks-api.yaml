@@ -1,0 +1,19 @@
+name: Call-Patchworks-Api
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  ping-api:
+    if: ${{ contains(github.event.comment.body, '/ping') }}
+    runs-on: ubuntu-20.04
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: login vs display_login
+        echo ${{ github.event.comment.actor.login }}
+        echo ${{ github.event.comment.actor.display_login }}
+        echo ${{ github.event.comment.issue }}
+

@@ -78,9 +78,11 @@ def failures_to_markdown(failures: Dict[str, List[str]], current_hash: str, patc
     result = f"""---
 title: Testsuite Status {current_hash if patch_name == "" else patch_name} 
 """
-    labels = {"bug"}
+    labels = set()
     labels.add(assign_labels("failed_build.txt", "build-failure"))
     labels.add(assign_labels("failed_testsuite.txt", "testsuite-failure"))
+    if len(failures["New"]) > 0:
+        labels.add("new-regressions")
     if "" in labels:
         labels.remove("")
     result += f"labels: {', '.join(labels)}\n"
