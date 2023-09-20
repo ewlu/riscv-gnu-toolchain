@@ -30,28 +30,34 @@ def parse_arguments():
         type=str,
         help="which repo to pull from"
     )
+    parser.add_argument(
+        "-zip",
+        default=None,
+        type=str,
+        help="which repo to pull from"
+    )
     return parser.parse_args()
 
 
-def download_artifact_with_name(artifact_name: str, token: str, outdir: str, repo: str):
+def download_artifact_with_name(artifact_name: str, token: str, outdir: str, repo_name: str, zip_name: str):
     """
     Download the artifact with a given name into ./logs.
     """
     auth = Auth.Token(token)
     g = Github(auth=auth)
 
-    repo = g.get_repo(repo)
+    repo = g.get_repo(repo_name)
 
     artifacts = repo.get_artifacts(artifact_name).get_page(0)
     if len(artifacts) != 0:
-        download_artifact(artifact_name, str(artifacts[0].id), token, outdir)
+        download_artifact(artifact_name, str(artifacts[0].id), token, outdir, repo=repo_name, artifact_zip_name=zip_name)
     else:
         raise ValueError(f"Failed to find artifact for {artifact_name}")
 
 
 def main():
     args = parse_arguments()
-    download_artifact_with_name(args.name, args.token, args.outdir, args.repo)
+    download_artifact_with_name(args.name, args.token, args.outdir, args.repo, args.zip)
 
 
 if __name__ == "__main__":
