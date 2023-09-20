@@ -30,7 +30,7 @@ jobs:
       - name: Download patch
         run: |
           mkdir temp
-          python ./scripts/download_single_artifact.py -name ${{ steps.patch-name.outputs.patch_name }}-downloaded-patches -outdir ./
+          python ./scripts/download_single_artifact.py -name ${{ steps.patch-name.outputs.patch_name }}-downloaded-patches -token ${{ secrets.GITHUB_TOKEN }} -outdir ./
           
       - name: Extract patch
         run: |
