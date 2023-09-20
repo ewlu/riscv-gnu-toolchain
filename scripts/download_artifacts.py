@@ -113,9 +113,8 @@ def download_artifact(artifact_name: str, artifact_id: str, token: str, outdir: 
         "X-Github-Api-Version": "2022-11-28",
     }
 
-    if not artifact_zip_name:
+    if artifact_zip_name is None:
         artifact_zip_name = artifact_name.replace(".log", ".zip")
-
 
     r = requests.get(
         f"https://api.github.com/repos/{repo}/actions/artifacts/{artifact_id}/zip",
