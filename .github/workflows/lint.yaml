@@ -63,13 +63,13 @@ jobs:
           filename: trimmed_issue.md
           update_existing: true
           
-      - name: Report status
+      - name: Report linter warning
         if: ${{ steps.lint.outputs.lint_failed == 'true' }}
         run: |
-          echo WARN
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'linter warning' -iid ${{ steps.create-issue.outputs.number }}
 
-      - name: Report status
+      - name: Report linter success
         if: ${{ steps.lint.outputs.lint_failed == 'false' }}
         run: |
-          echo PASS
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'linter success' -iid ${{ steps.create-issue.outputs.number }}
           
