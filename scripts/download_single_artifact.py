@@ -33,18 +33,21 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def download_artifact_with_name(artifact_name: str, token: str, outdir: str, repo: str):
+def download_artifact_with_name(artifact_name: str, token: str, outdir: str, repo_name: str):
     """
     Download the artifact with a given name into ./logs.
     """
     auth = Auth.Token(token)
     g = Github(auth=auth)
 
-    repo = g.get_repo(repo)
+    repo = g.get_repo(repo_name)
 
     artifacts = repo.get_artifacts(artifact_name).get_page(0)
     if len(artifacts) != 0:
-        download_artifact(artifact_name, str(artifacts[0].id), token, outdir)
+        if repo == "patrick-rivos/riscv-gnu-toolchain":
+            download_artifact(artifact_name, str(artifacts[0].id), token, outdir)
+        else:
+            download_artifact(artifact_name, str(artifacts[0].id), token, outdir, repo=repo_name, artifact_zip_name="patches.zip")
     else:
         raise ValueError(f"Failed to find artifact for {artifact_name}")
 

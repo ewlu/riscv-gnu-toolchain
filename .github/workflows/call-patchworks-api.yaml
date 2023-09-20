@@ -34,6 +34,8 @@ jobs:
           
       - name: Extract patch
         run: |
+          mv temp/patches.zip .
+          unzip patches.zip
           unzip ${{ steps.patch-name.outputs.patch_name }}-downloaded-patches.zip
 
       - name: Get patch id

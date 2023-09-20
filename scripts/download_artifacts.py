@@ -100,7 +100,8 @@ def check_artifact_exists(artifact_name: str):
     return True
 
 
-def download_artifact(artifact_name: str, artifact_id: str, token: str, outdir: str = "current_logs"):
+def download_artifact(artifact_name: str, artifact_id: str, token: str, outdir: str = "current_logs", 
+                      repo: str = "patrick-rivos/riscv-gnu-toolchain", artifact_zip_name: str = None):
     """
     Uses GitHub api endpoint to download and extract the previous workflow
     log artifacts into directory called ./logs. Current workflow log artifacts
@@ -111,15 +112,23 @@ def download_artifact(artifact_name: str, artifact_id: str, token: str, outdir: 
         "Authorization": f"token {token}",
         "X-Github-Api-Version": "2022-11-28",
     }
-    artifact_zip_name = artifact_name.replace(".log", ".zip")
+
+    if not artifact_zip_name:
+        artifact_zip_name = artifact_name.replace(".log", ".zip")
+
+
     r = requests.get(
-        f"https://api.github.com/repos/patrick-rivos/riscv-gnu-toolchain/actions/artifacts/{artifact_id}/zip",
+        f"https://api.github.com/repos/{repo}/actions/artifacts/{artifact_id}/zip",
         headers=params,
     )
     print(f"download for {artifact_zip_name}: {r.status_code}")
     download_binary = False
     with open(f"./temp/{artifact_zip_name}", "wb") as f:
         f.write(r.content)
+    
+    if repo != "patrick-rivos/riscv-gnu-toolchain":
+        return
+
     with ZipFile(f"./temp/{artifact_zip_name}", "r") as zf:
         try:
             zf.extractall(path=f"./temp/{artifact_name.split('.log')[0]}")
