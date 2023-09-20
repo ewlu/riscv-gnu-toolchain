@@ -22,7 +22,7 @@ jobs:
       - name: Get patch-name
         id: patch-name
         run: |
-          export title=${{ github.event.issue.title }}
+          export title="${{ github.event.issue.title }}"
           export PATCH_NAME=${title##* }
           echo $PATCH_NAME
           echo "patch_name=$PATCH_NAME" >> $GITHUB_OUTPUT
