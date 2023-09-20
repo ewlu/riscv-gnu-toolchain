@@ -86,6 +86,8 @@ title: Testsuite Status {current_hash if patch_name == "" else patch_name}
     if "" in labels:
         labels.remove("")
     result += f"labels: {', '.join(labels)}\n"
+    with open("./labels.txt", "w") as f:
+        f.write(f"{','join(labels)}")
     result += "---\n\n"
     result += failures_to_summary(failures)
     return result

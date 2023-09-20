@@ -112,6 +112,10 @@ jobs:
           git fetch
           git checkout ${{ inputs.gcchash }}
 
+      - name: Report apply
+        run: |
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'applying patch' -rid ${{ github.run_id }} -state 'pending'
+
       - name: Apply patches to baseline
         id: apply-baseline
         run: |
@@ -153,7 +157,7 @@ jobs:
       - name: Check warn rebase
         if: ${{ steps.apply-baseline.outputs.apply_baseline == 'true' && steps.apply-tip-of-tree.outputs.apply_tot == 'false' }}
         run: |
-          echo "TODO WARN REBASE"
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'patch apply warn' -rid ${{ github.run_id }} -state 'warning'
 
       - name: Check build only
         id: build-only

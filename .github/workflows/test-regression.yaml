@@ -89,6 +89,10 @@ jobs:
       - name: Install dependencies
         run: sudo ./.github/setup-apt.sh
 
+      - name: Report build
+        run: |
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build start' -rid ${{ github.run_id }} -state 'pending'
+
       - name: Configure
         run: |
           mkdir build
@@ -140,6 +144,10 @@ jobs:
           export BUILD_SUCCESS="success"
           echo $BUILD_SUCCESS
           echo "build_success=$BUILD_SUCCESS" >> "$GITHUB_OUTPUT"
+
+      - name: Report build success
+        run: |
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build success' -rid ${{ github.run_id }} -state 'success'
 
     outputs:
       build_success: ${{ steps.build-success.outputs.build_success }}
@@ -255,6 +263,10 @@ jobs:
         run: |
           cd build
           make -d ${{ inputs.mode }}
+
+      - name: Report testing
+        run: |
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'testing start' -rid ${{ github.run_id }} -state 'pending'
 
       - name: Reinstall stage2
         run: |
