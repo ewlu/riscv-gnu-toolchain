@@ -78,7 +78,7 @@ jobs:
           export GCCHASH=$(python ./scripts/get_baseline_hash.py -token ${{ secrets.GITHUB_TOKEN }})
           echo $GCCHASH
           # echo "gcchash=$GCCHASH" >> $GITHUB_OUTPUT
-          echo "gcchash=32731fa5b0abf092029b8e2be64319b978bda514" >> $GITHUB_OUTPUT # commit from 9/18/2021
+          echo "gcchash=7c09e7e24b0d04857d5880197959e75bda0c489e" >> $GITHUB_OUTPUT # commit from 9/18/2021
 
       - name: Retrieve cache
         id: retrieve-cache
