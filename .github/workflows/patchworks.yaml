@@ -24,7 +24,8 @@ jobs:
 
           mkdir patch_urls
           mkdir patchworks_urls
-          python scripts/create_patches_files.py -backup $(cat date_older.txt) -start $(cat date_old.txt) -end $(cat date_recent.txt)
+          # python scripts/create_patches_files.py -backup $(cat date_older.txt) -start $(cat date_old.txt) -end $(cat date_recent.txt)
+          python scripts/create_patches_files.py -backup 2023-09-19T14:52:00 -start 2023-09-19T15:07:00 -end 2023-09-19T15:22:00
 
       - name: List patch artifacts
         id: list_patches
@@ -76,7 +77,8 @@ jobs:
 
           export GCCHASH=$(python ./scripts/get_baseline_hash.py -token ${{ secrets.GITHUB_TOKEN }})
           echo $GCCHASH
-          echo "gcchash=$GCCHASH" >> $GITHUB_OUTPUT
+          # echo "gcchash=$GCCHASH" >> $GITHUB_OUTPUT
+          echo "gcchash=32731fa5b0abf092029b8e2be64319b978bda514" >> $GITHUB_OUTPUT # commit from 9/18/2021
 
       - name: Retrieve cache
         id: retrieve-cache
