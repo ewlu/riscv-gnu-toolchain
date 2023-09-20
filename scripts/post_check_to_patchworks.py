@@ -1,7 +1,7 @@
 import requests
 import argparse
 
-def parse_arguments()
+def parse_arguments():
     parser = argparse.ArgumentParser(description="Send api response")
     parser.add_argument(
         "-pid",
@@ -11,14 +11,6 @@ def parse_arguments()
         type=str,
         help="Patch id",
     )
-    # parser.add_argument(
-    #     "-state",
-    #     "--state",
-    #     metavar="<string>",
-    #     required=True,
-    #     type=str,
-    #     help="Response type",
-    # )
     parser.add_argument(
         "-desc",
         "--description",
