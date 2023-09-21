@@ -90,6 +90,11 @@ jobs:
       - name: Install dependencies
         run: sudo ./.github/setup-apt.sh
 
+      - name: Report build
+        run: |
+          # TODO: create placeholder issue
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build start' -rid ${{ github.run_id }} -state 'pending' -context 'build'
+
       - name: Configure
         run: |
           mkdir build
@@ -102,9 +107,16 @@ jobs:
           fi
 
       - name: Make gcc
+        id: build-gcc
         run: |
           cd build
           make -j $(nproc) ${{ inputs.mode }}
+
+      - name: Report error on build-failure
+        if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
+        run: |
+          # TODO: update issue build failure
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build failure' -rid ${{ github.run_id }} -state 'fail' -context 'build'
 
       - name: Remove sources to reclaim disk space
         run: |
@@ -141,6 +153,11 @@ jobs:
           export BUILD_SUCCESS="success"
           echo $BUILD_SUCCESS
           echo "build_success=$BUILD_SUCCESS" >> "$GITHUB_OUTPUT"
+
+      - name: Report build success
+        run: |
+          # TODO: update issue build success
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build success' -rid ${{ github.run_id }} -state 'success' -context 'build'
 
     outputs:
       build_success: ${{ steps.build-success.outputs.build_success }}
@@ -256,6 +273,10 @@ jobs:
         run: |
           cd build
           make -d ${{ inputs.mode }}
+
+      - name: Report testing
+        run: |
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'testing start' -rid ${{ github.run_id }} -state 'pending' -context 'testing'
 
       - name: Reinstall stage2
         run: |
