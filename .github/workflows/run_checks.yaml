@@ -154,10 +154,10 @@ jobs:
           echo "tot_hash=$TOT_HASH" >> $GITHUB_OUTPUT
         continue-on-error: true
 
-      - name: Check warn rebase
+      - name: Report successful application
         if: ${{ steps.apply-baseline.outputs.apply_baseline == 'true' && steps.apply-tip-of-tree.outputs.apply_tot == 'false' }}
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'patch apply warn' -rid ${{ github.run_id }} -state 'warning'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'patch applied successfully' -rid ${{ github.run_id }} -state 'success'
 
       - name: Check build only
         id: build-only

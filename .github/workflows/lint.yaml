@@ -70,7 +70,7 @@ jobs:
       - name: Report linter warning
         if: ${{ steps.lint.outputs.lint_failed == 'true' }}
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'linter warning' -iid ${{ steps.create-issue.outputs.number }} -state 'warning'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'linter found issues with this patch' -iid ${{ steps.create-issue.outputs.number }} -state 'warning'
 
       - name: Report linter success
         if: ${{ steps.lint.outputs.lint_failed == 'false' }}
