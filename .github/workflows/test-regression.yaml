@@ -92,7 +92,7 @@ jobs:
       - name: Report build
         run: |
           # TODO: create placeholder issue
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build start' -rid ${{ github.run_id }} -state 'pending'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build start' -rid ${{ github.run_id }} -state 'pending' -context 'build'
 
       - name: Configure
         run: |
@@ -115,7 +115,7 @@ jobs:
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
           # TODO: update issue build failure
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build failure' -rid ${{ github.run_id }} -state 'fail'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build failure' -rid ${{ github.run_id }} -state 'fail' -context 'build'
 
       - name: Remove sources to reclaim disk space
         run: |
@@ -156,7 +156,7 @@ jobs:
       - name: Report build success
         run: |
           # TODO: update issue build success
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build success' -rid ${{ github.run_id }} -state 'success'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build success' -rid ${{ github.run_id }} -state 'success' -context 'build'
 
     outputs:
       build_success: ${{ steps.build-success.outputs.build_success }}
@@ -275,7 +275,7 @@ jobs:
 
       - name: Report testing
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'testing start' -rid ${{ github.run_id }} -state 'pending'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'testing start' -rid ${{ github.run_id }} -state 'pending' -context 'testing'
 
       - name: Reinstall stage2
         run: |

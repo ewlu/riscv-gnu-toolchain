@@ -28,6 +28,14 @@ def parse_arguments():
         help="check state",
     )
     parser.add_argument(
+        "-context",
+        "--context",
+        required=True,
+        metavar="<string>",
+        type=str,
+        help="What test we reporting for",
+    )
+    parser.add_argument(
         "-rid",
         "--run-id",
         metavar="<string>",
@@ -43,7 +51,7 @@ def parse_arguments():
     )
     return parser.parse_args()
 
-def send(patch_id: str, desc: str, issue: str, rid: str, state: str):
+def send(patch_id: str, desc: str, issue: str, rid: str, state: str, context: str):
     target_url = None
     if issue == "":
         target_url = f"https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/{rid}"
@@ -53,7 +61,7 @@ def send(patch_id: str, desc: str, issue: str, rid: str, state: str):
     params = {
         "state": state,
         "target_url": target_url,
-        "context": "toolchain-ci-rivos",
+        "context": f"toolchain-ci-rivos/{context}",
         "description": desc
     }
 
@@ -65,7 +73,7 @@ def send(patch_id: str, desc: str, issue: str, rid: str, state: str):
 
 def main():
     args = parse_arguments()
-    send(args.patch_id, args.description, args.issue_id, args.run_id, args.state)
+    send(args.patch_id, args.description, args.issue_id, args.run_id, args.state, args.context)
 
 if __name__ == "__main__":
     main()
