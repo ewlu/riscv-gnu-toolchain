@@ -28,6 +28,10 @@ jobs:
         run: |
           pip3 install termcolor unidiff
 
+      - name: Report start linter
+        run: |
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'starting linter' -rid ${{ github.run_id }} -state 'pending' -context 'linter'
+
       # Only lint the last patch in the series since that's where the warning will be displayed
       - name: Lint patch
         id: lint
@@ -66,10 +70,10 @@ jobs:
       - name: Report linter warning
         if: ${{ steps.lint.outputs.lint_failed == 'true' }}
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'linter warning' -iid ${{ steps.create-issue.outputs.number }}
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'linter found issues with this patch' -iid ${{ steps.create-issue.outputs.number }} -state 'warning' -context 'linter'
 
       - name: Report linter success
         if: ${{ steps.lint.outputs.lint_failed == 'false' }}
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'linter success' -iid ${{ steps.create-issue.outputs.number }}
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'linter success' -iid ${{ steps.create-issue.outputs.number }} -state 'success' -context 'linter'
           
