@@ -227,6 +227,13 @@ jobs:
           filename: trimmed_issue.md
           update_existing: true
 
+
+      - name: Output issue labels
+        id: issue-labels
+        run: |
+          export LABELS=$(cat labels.txt)
+          echo "issue_labels=$LABELS" >> $GITHUB_OUTPUT
+
       - name: Add Build-Only Label to New Issue
         if: ${{ inputs.build_only }}
         uses: actions/github-script@v6
@@ -239,3 +246,20 @@ jobs:
               labels: ['build-only']
             })
 
+      - name: Report Failure
+        if: ${{ contains(steps.issue-labels.outputs.issue_labels, 'build-failure') || contains(steps.issue-labels.outputs.issue_labels, 'testsuite-failure') || contains(steps.issue-labels.outputs.issue_labels, 'new-regressions') }}
+        id: report-failure
+        run: |
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'testsuite failure' -iid ${{ steps.create-issue.outputs.number }} -state 'fail' -context 'testing'
+          
+      - name: Report Warning
+        if: ${{ steps.report-failure.outcome == 'skipped' && inputs.build_only == 'true' }}
+        id: report-warning
+        run: |
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'testsuite warning' -iid ${{ steps.create-issue.outputs.number }} -state 'warning' -context 'testing'
+
+      - name: Report Success
+        if: ${{ steps.report-failure.outcome == 'skipped' && steps.report-warning.outcome == 'skipped' }}
+        id: report-success
+        run: |
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'testsuite success' -iid ${{ steps.create-issue.outputs.number }} -state 'success' -context 'testing'

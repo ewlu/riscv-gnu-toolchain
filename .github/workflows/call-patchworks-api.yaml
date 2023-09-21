@@ -67,7 +67,7 @@ jobs:
 
       - name: Report pass
         run: |
-          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc 'testsuite success' -iid ${{ github.event.issue.number }}
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc 'testsuite success' -iid ${{ github.event.issue.number }} -state 'success' -context 'testing'
 
 
   report-warn:
@@ -88,7 +88,7 @@ jobs:
 
       - name: Report Warning
         run: |
-          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc 'testsuite warning' -iid ${{ github.event.issue.number }}
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc 'testsuite warning' -iid ${{ github.event.issue.number }} -state 'warning' -context 'testing'
 
 
   report-error:
@@ -109,5 +109,5 @@ jobs:
 
       - name: Report Error
         run: |
-          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc 'testsuite fail' -iid ${{ github.event.issue.number }}
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc 'testsuite fail' -iid ${{ github.event.issue.number }} -state 'fail' -context 'testing'
 
