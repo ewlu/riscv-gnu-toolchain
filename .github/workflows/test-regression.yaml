@@ -91,7 +91,7 @@ jobs:
 
       - name: Report build
         run: |
-          # TODO: create script to create build issue markdown and create issue
+          # TODO: create placeholder issue
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build start' -rid ${{ github.run_id }} -state 'pending'
 
       - name: Configure
@@ -114,7 +114,7 @@ jobs:
       - name: Report error on build-failure
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
-          # TODO: create script to create build issue markdown and create issue
+          # TODO: update issue build failure
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build failure' -rid ${{ github.run_id }} -state 'fail'
 
       - name: Remove sources to reclaim disk space
@@ -155,7 +155,7 @@ jobs:
 
       - name: Report build success
         run: |
-          # TODO: create script to create build issue markdown and create issue
+          # TODO: update issue build success
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build success' -rid ${{ github.run_id }} -state 'success'
 
     outputs:
