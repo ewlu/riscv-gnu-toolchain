@@ -25,7 +25,7 @@ jobs:
           mkdir patch_urls
           mkdir patchworks_urls
           # python scripts/create_patches_files.py -backup $(cat date_older.txt) -start $(cat date_old.txt) -end $(cat date_recent.txt)
-          python scripts/create_patches_files.py -backup 2023-09-20T12:54:28 -start 2023-09-20T13:09:28 -end 2023-09-20T13:24:28
+          python scripts/create_patches_files.py -backup 2023-09-22T12:01:00 -start 2023-09-22T12:16:00 -end 2023-09-22T12:31:00
 
       - name: List patch artifacts
         id: list_patches
