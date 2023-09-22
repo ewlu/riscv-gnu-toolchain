@@ -115,6 +115,7 @@ jobs:
       - name: Report that we're now attempting to apply the patch
         run: |
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }}) -desc 'Attempting to apply patch to tip-of-tree' -rid ${{ github.run_id }} -state 'pending' -context 'apply-patch'
+        continue-on-error: true
 
       - name: Apply patches to baseline
         id: apply-baseline
@@ -158,6 +159,7 @@ jobs:
         if: ${{ steps.apply-baseline.outputs.apply_baseline == 'true' && steps.apply-tip-of-tree.outputs.apply_tot == 'false' }}
         run: |
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }}) -desc 'Patch did not apply to tip of tree.' -rid ${{ github.run_id }} -state 'warning' -context 'apply-patch'
+        continue-on-error: true
 
       - name: Check build only
         id: build-only
@@ -175,6 +177,7 @@ jobs:
         if: ${{ steps.apply-tip-of-tree.outputs.apply_tot == 'true' }}
         run: |
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }}) -desc 'Patch applied to tip of tree successfully.' -rid ${{ github.run_id }} -state 'success' -context 'apply-patch'
+        continue-on-error: true
 
       - name: Output new gcchash
         id: new-gcc-hash

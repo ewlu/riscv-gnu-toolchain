@@ -251,15 +251,18 @@ jobs:
         id: report-failure
         run: |
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'testsuite failure' -iid ${{ steps.create-issue.outputs.number }} -state 'fail' -context 'testing'
+        continue-on-error: true
           
       - name: Report Warning
         if: ${{ steps.report-failure.outcome == 'skipped' && inputs.build_only == 'true' }}
         id: report-warning
         run: |
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'testsuite warning' -iid ${{ steps.create-issue.outputs.number }} -state 'warning' -context 'testing'
+        continue-on-error: true
 
       - name: Report Success
         if: ${{ steps.report-failure.outcome == 'skipped' && steps.report-warning.outcome == 'skipped' }}
         id: report-success
         run: |
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'testsuite success' -iid ${{ steps.create-issue.outputs.number }} -state 'success' -context 'testing'
+        continue-on-error: true
