@@ -75,5 +75,5 @@ jobs:
       - name: Report linter success
         if: ${{ steps.lint.outputs.lint_failed == 'false' }}
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'linter success' -iid ${{ steps.create-issue.outputs.number }} -state 'success' -context 'linter'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'linter success' -rid ${{ github.run_id }} -state 'success' -context 'linter'
           
