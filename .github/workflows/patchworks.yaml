@@ -112,6 +112,7 @@ jobs:
           cd gcc
           git checkout master
           git pull
+          git checkout d35e12e1c08992f94d4d43bc8ef16482d200091b
 
       - name: Cache submodules
         if: steps.retrieve-cache.outputs.cache-hit != 'true'

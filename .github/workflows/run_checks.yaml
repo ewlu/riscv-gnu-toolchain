@@ -140,6 +140,7 @@ jobs:
           cd gcc
           git reset --hard origin/master
           git pull origin master
+          git checkout d35e12e1c08992f94d4d43bc8ef16482d200091b
           export TOT_HASH=$(git rev-parse HEAD)
           git am ../patches/*.patch --whitespace=fix -q &> out || true
           cat out
@@ -182,6 +183,7 @@ jobs:
         run: |
           cd gcc
           git reset --hard origin/master
+          git checkout d35e12e1c08992f94d4d43bc8ef16482d200091b
           if [ "${{ steps.apply-baseline.outputs.apply_baseline }}" == "true" ]; then
             git checkout ${{ inputs.gcchash }}
           fi

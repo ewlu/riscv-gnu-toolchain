@@ -78,6 +78,7 @@ jobs:
           git checkout -
           git reset --hard origin/master
           git pull origin master
+          git checkout d35e12e1c08992f94d4d43bc8ef16482d200091b
 
       - name: Apply patches 
         run: |
