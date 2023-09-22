@@ -23,7 +23,7 @@ def parse_arguments():
         "-state",
         "--state",
         metavar="<string>",
-        default="pending"
+        default="pending",
         type=str,
         help="check state",
     )
