@@ -93,6 +93,7 @@ jobs:
         run: |
           # TODO: create placeholder issue
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build start' -rid ${{ github.run_id }} -state 'pending' -context 'build'
+        continue-on-error: true
 
       - name: Configure
         run: |
@@ -116,6 +117,7 @@ jobs:
         run: |
           # TODO: update issue build failure
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build failure' -rid ${{ github.run_id }} -state 'fail' -context 'build'
+        continue-on-error: true
 
       - name: Remove sources to reclaim disk space
         run: |
@@ -157,6 +159,7 @@ jobs:
         run: |
           # TODO: update issue build success
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build success' -rid ${{ github.run_id }} -state 'success' -context 'build'
+        continue-on-error: true
 
     outputs:
       build_success: ${{ steps.build-success.outputs.build_success }}
@@ -276,6 +279,7 @@ jobs:
       - name: Report testing
         run: |
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'testing start' -rid ${{ github.run_id }} -state 'pending' -context 'testing'
+        continue-on-error: true
 
       - name: Reinstall stage2
         run: |
