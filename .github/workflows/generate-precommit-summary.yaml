@@ -136,7 +136,7 @@ jobs:
         run: |
           ls ./temp/
           mkdir -p current_logs
-          unzip ./temp/*report.log.zip -d ./current_logs || true
+          unzip ./temp/*report.zip -d ./current_logs || true
           ls current_logs
 
       - name: Compare artifacts
