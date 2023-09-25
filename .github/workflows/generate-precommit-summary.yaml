@@ -123,15 +123,6 @@ jobs:
           unzip ./temp/*report.log.zip -d ./current_logs || true
           ls current_logs
 
-      - name: Download baseline logs
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ inputs.gcchash }}-previous-logs
-
-      - name: Extract previous logs
-        run: |
-          unzip previous_logs.zip
-
       - name: Compare artifacts
         run: |
           python ./scripts/compare_all_artifacts.py -hash ${{ inputs.new_gcchash }}
