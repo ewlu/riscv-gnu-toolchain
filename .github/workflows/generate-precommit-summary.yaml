@@ -205,7 +205,9 @@ jobs:
           pip install -U pyopenssl cryptography pygithub requests
           mkdir temp
           python ./scripts/download_single_artifact.py -name ${{ inputs.patch_name }}-downloaded-patches -token ${{ secrets.GITHUB_TOKEN }} -outdir ./temp -repo ewlu/riscv-gnu-toolchain
-          mv ./temp/${{ inputs.patch_name }}-downloaded-patches.zip .
+          ls temp
+          unzip temp/patches.zip
+          mv ./temp/${{ inputs.patch_name }}-downloaded-patches/* .
 
 
       - name: Download patches artifact
