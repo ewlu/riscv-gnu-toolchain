@@ -40,6 +40,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check workflow dispatch
+        id: dispatch
+        if: ${{ inputs.build_only == '' }}
+        run: |
+          echo "workflow_dispatch=true" >> $GITHUB_OUTPUT
+
       - name: Retrieve cache
         id: retrieve-cache
         uses: actions/cache@v3
@@ -104,10 +110,20 @@ jobs:
             https://api.github.com/rate_limit
 
       - name: Download All targets
+        if: ${{ steps.dispatch.outputs.workflow_dispatch == 'true' }}
         uses: ./.github/actions/download-all-comparison-artifacts
         with:
           gcchash: ${{ inputs.new_gcchash }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          repo: 'ewlu/riscv-gnu-toolchain'
+
+      - name: Download All targets
+        if: ${{ steps.dispatch.outputs.workflow_dispatch == '' }}
+        uses: ./.github/actions/download-all-comparison-artifacts
+        with:
+          gcchash: ${{ inputs.new_gcchash }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repo: 'patrick-rivos/riscv-gnu-toolchain'
 
       - name: Print API usage info
         run: |
@@ -165,6 +181,7 @@ jobs:
 
     outputs:
       gcchash: ${{ inputs.gcchash }}
+      workflow_dispatch: ${{ steps.dispatch.outputs.workflow_dispatch }}
 
   generate-issues:
     if: always() # ensure generate issues always runs even on error
@@ -190,14 +207,9 @@ jobs:
         with:
           name: ${{ needs.compare-artifacts.outputs.gcchash }}-previous-logs
 
-      - name: Check workflow dispatch
-        id: dispatch
-        if: ${{ inputs.build_only == '' }}
-        run: |
-          echo "workflow_dispatch=true" >> $GITHUB_OUTPUT
 
       - name: Download patches artifact
-        if: ${{ steps.dispatch.outputs.workflow_dispatch == 'true' }}
+        if: ${{ needs.compare-artifacts.outputs.workflow_dispatch == 'true' }}
         run: |
           sudo apt remove python3-pip
           wget https://bootstrap.pypa.io/get-pip.py
@@ -209,7 +221,7 @@ jobs:
           unzip temp/${{ inputs.patch_name }}-downloaded-patches
 
       - name: Download patches artifact
-        if: ${{ steps.dispatch.outputs.workflow_dispatch != 'true' }}
+        if: ${{ needs.compare-artifacts.outputs.workflow_dispatch != 'true' }}
         uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.patch_name }}-downloaded-patches

@@ -7,6 +7,8 @@ inputs:
     required: true
   github-token:
     required: true
+  repo:
+    required: true
 
 runs:
   using: "composite"
@@ -24,7 +26,7 @@ runs:
       shell: bash
       run: |
         pip install pygithub requests
-        python ./scripts/download_single_artifact.py -name ${{ inputs.report-artifact-name }} -token ${{ inputs.github-token }} -outdir current_logs
+        python ./scripts/download_single_artifact.py -name ${{ inputs.report-artifact-name }} -token ${{ inputs.github-token }} -outdir current_logs -repo ${{ inputs.repo }}
       continue-on-error: true
 
     - name: Download rv32 non-multilib binary
@@ -40,5 +42,5 @@ runs:
       shell: bash
       run: |
         pip install pygithub requests
-        python ./scripts/download_single_artifact.py -name ${{ inputs.binary-artifact-name }} -token ${{ inputs.github-token }} -outdir temp
+        python ./scripts/download_single_artifact.py -name ${{ inputs.binary-artifact-name }} -token ${{ inputs.github-token }} -outdir temp -repo ${{ inputs.repo }}
       continue-on-error: true
