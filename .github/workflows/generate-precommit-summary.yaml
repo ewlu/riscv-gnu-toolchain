@@ -207,8 +207,6 @@ jobs:
           python ./scripts/download_single_artifact.py -name ${{ inputs.patch_name }}-downloaded-patches -token ${{ secrets.GITHUB_TOKEN }} -outdir ./temp -repo ewlu/riscv-gnu-toolchain
           ls temp
           unzip temp/${{ inputs.patch_name }}-downloaded-patches
-          mv ./temp/${{ inputs.patch_name }}-downloaded-patches.zip .
-
 
       - name: Download patches artifact
         if: ${{ steps.dispatch.outputs.workflow_dispatch != 'true' }}
