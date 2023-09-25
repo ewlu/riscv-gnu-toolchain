@@ -190,7 +190,26 @@ jobs:
         with:
           name: ${{ needs.compare-artifacts.outputs.gcchash }}-previous-logs
 
+      - name: Check workflow dispatch
+        id: dispatch
+        if: ${{ inputs.build_only == '' }}
+        run: |
+          echo "workflow_dispatch=true" >> $GITHUB_OUTPUT
+
       - name: Download patches artifact
+        if: ${{ steps.dispatch.outputs.workflow_dispatch == 'true' }}
+        run: |
+          sudo apt remove python3-pip
+          wget https://bootstrap.pypa.io/get-pip.py
+          sudo python3 get-pip.py
+          pip install -U pyopenssl cryptography pygithub requests
+          mkdir temp
+          python ./scripts/download_single_artifact.py -name ${{ inputs.patch_name }}-downloaded-patches -token ${{ secrets.GITHUB_TOKEN }} -outdir ./temp
+          mv ./temp/${{ inputs.patch_name }}-downloaded-patches.zip .
+
+
+      - name: Download patches artifact
+        if: ${{ steps.dispatch.outputs.workflow_dispatch != 'true' }}
         uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.patch_name }}-downloaded-patches
