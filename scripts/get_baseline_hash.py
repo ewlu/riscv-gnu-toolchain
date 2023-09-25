@@ -20,7 +20,10 @@ def parse_baseline_hash(url: str, token: str):
     r = requests.get(url, params=params)
     issues = json.loads(r.text)
     issue = issues[0]
-    print(issue["title"].split(" ")[-1], end="")
+    print(f"Baseline from {issue['title']}")
+    assert("Testsuite Status" in issue["title"])
+    with open("./baseline.txt", "w") as f:
+        f.write(issue["title"].split(" ")[-1])
     
 
 def main():
