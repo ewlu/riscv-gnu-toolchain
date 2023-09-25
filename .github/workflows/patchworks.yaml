@@ -74,7 +74,7 @@ jobs:
           ls ./scripts/get_baseline_hash.py
           python ./scripts/get_baseline_hash.py -token ${{ secrets.GITHUB_TOKEN }}
 
-          export GCCHASH=$(python ./scripts/get_baseline_hash.py -token ${{ secrets.GITHUB_TOKEN }})
+          export GCCHASH=$(cat baseline.txt)
           echo $GCCHASH
           echo "gcchash=$GCCHASH" >> $GITHUB_OUTPUT
 
