@@ -40,6 +40,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check workflow dispatch
+        id: dispatch
+        if: ${{ inputs.build_only == '' }}
+        run: |
+          echo "workflow_dispatch=true" >> $GITHUB_OUTPUT
+
       - name: Retrieve cache
         id: retrieve-cache
         uses: actions/cache@v3
@@ -104,10 +110,20 @@ jobs:
             https://api.github.com/rate_limit
 
       - name: Download All targets
+        if: ${{ steps.dispatch.outputs.workflow_dispatch == 'true' }}
         uses: ./.github/actions/download-all-comparison-artifacts
         with:
           gcchash: ${{ inputs.new_gcchash }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          repo: 'ewlu/riscv-gnu-toolchain'
+
+      - name: Download All targets
+        if: ${{ steps.dispatch.outputs.workflow_dispatch == '' }}
+        uses: ./.github/actions/download-all-comparison-artifacts
+        with:
+          gcchash: ${{ inputs.new_gcchash }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repo: 'patrick-rivos/riscv-gnu-toolchain'
 
       - name: Print API usage info
         run: |
@@ -120,7 +136,9 @@ jobs:
         run: |
           ls ./temp/
           mkdir -p current_logs
-          unzip ./temp/*report.log.zip -d ./current_logs || true
+          for f in $(ls ./temp/*report.zip); do 
+            unzip $f -d ./current_logs || true
+          done
           ls current_logs
 
       - name: Compare artifacts
@@ -165,6 +183,7 @@ jobs:
 
     outputs:
       gcchash: ${{ inputs.gcchash }}
+      workflow_dispatch: ${{ steps.dispatch.outputs.workflow_dispatch }}
 
   generate-issues:
     if: always() # ensure generate issues always runs even on error
@@ -190,7 +209,21 @@ jobs:
         with:
           name: ${{ needs.compare-artifacts.outputs.gcchash }}-previous-logs
 
+
       - name: Download patches artifact
+        if: ${{ needs.compare-artifacts.outputs.workflow_dispatch == 'true' }}
+        run: |
+          sudo apt remove python3-pip
+          wget https://bootstrap.pypa.io/get-pip.py
+          sudo python3 get-pip.py
+          pip install -U pyopenssl cryptography pygithub requests
+          mkdir temp
+          python ./scripts/download_single_artifact.py -name ${{ inputs.patch_name }}-downloaded-patches -token ${{ secrets.GITHUB_TOKEN }} -outdir ./temp -repo ewlu/riscv-gnu-toolchain
+          ls temp
+          unzip temp/${{ inputs.patch_name }}-downloaded-patches
+
+      - name: Download patches artifact
+        if: ${{ needs.compare-artifacts.outputs.workflow_dispatch != 'true' }}
         uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.patch_name }}-downloaded-patches
