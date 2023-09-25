@@ -62,7 +62,7 @@ def download_artifact(artifact_name: str, artifact_id: str, token: str, repo: st
         "X-Github-Api-Version": "2022-11-28",
     }
     response = requests.get(
-        f"https://api.github.com/repos/{repo}/riscv-gnu-toolchain/actions/artifacts/{artifact_id}/zip",
+        f"https://api.github.com/repos/{repo}/actions/artifacts/{artifact_id}/zip",
         headers=params,
         timeout=15 * 60,  # 15 minute timeout
     )
