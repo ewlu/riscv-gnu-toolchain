@@ -206,8 +206,8 @@ jobs:
           mkdir temp
           python ./scripts/download_single_artifact.py -name ${{ inputs.patch_name }}-downloaded-patches -token ${{ secrets.GITHUB_TOKEN }} -outdir ./temp -repo ewlu/riscv-gnu-toolchain
           ls temp
-          unzip temp/patches.zip
-          mv ./temp/${{ inputs.patch_name }}-downloaded-patches/* .
+          unzip temp/${{ inputs.patch_name }}-downloaded-patches
+          mv ./temp/${{ inputs.patch_name }}-downloaded-patches.zip .
 
 
       - name: Download patches artifact
