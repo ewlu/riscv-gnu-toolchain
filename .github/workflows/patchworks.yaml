@@ -141,34 +141,6 @@ jobs:
             cache.zip
           retention-days: 5
 
-      - name: Download baseline results
-        run: |
-          sudo apt remove python3-pip
-          wget https://bootstrap.pypa.io/get-pip.py
-          sudo python3 get-pip.py
-          pip install -U pyopenssl cryptography pygithub requests
-          mkdir temp
-          python ./scripts/download_single_artifact.py -name ${{ steps.gcc-hash.outputs.gcchash }}-current-logs -token ${{ secrets.GITHUB_TOKEN }} -outdir ./temp
-
-
-      - name: Extract baseline results
-        run: |
-          mv ./temp/current_logs.zip .
-          unzip current_logs.zip
-          mv current_logs previous_logs
-
-      - name: Make previous logs artifact
-        run: |
-          zip -r previous_logs.zip previous_logs
-
-      - name: Upload baseline results
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ steps.gcc-hash.outputs.gcchash }}-previous-logs
-          path: |
-            previous_logs.zip
-          retention-days: 90
-
     outputs:
       gcchash: ${{ steps.gcc-hash.outputs.gcchash }}
 

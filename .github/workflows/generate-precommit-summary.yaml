@@ -18,6 +18,19 @@ on:
       tot_hash:
         required: true
         type: string
+  workflow_dispatch:
+    branches:
+      - patchworks-ci
+    inputs:
+      gcchash:
+        description: 'GCC Hash'
+        required: true
+      new_gcchash:
+        description: 'GCC Hash of applied commit'
+        required: true
+      patch_name:
+        description: 'Patch name to regenerate summary for'
+        required: true
 
 jobs:
   compare-artifacts:
@@ -69,6 +82,17 @@ jobs:
           wget https://bootstrap.pypa.io/get-pip.py
           sudo python3 get-pip.py
           pip install -U pyopenssl cryptography
+
+      - name: Download baseline results
+        run: |
+          pip install pygithub requests
+          python ./scripts/download_single_artifact.py -name ${{ inputs.gcchash }}-current-logs -token ${{ secrets.GITHUB_TOKEN }} -outdir ./temp
+
+      - name: Extract baseline results
+        run: |
+          mv ./temp/current_logs.zip .
+          unzip current_logs.zip
+          mv current_logs previous_logs
 
       # Download all workload artifacts
 
@@ -122,6 +146,7 @@ jobs:
         run: |
           zip -r summaries.zip summaries
           zip -r current_logs.zip current_logs
+          zip -r previous_logs.zip previous_logs
 
       - name: Upload compare summaries
         uses: actions/upload-artifact@v3
@@ -137,6 +162,14 @@ jobs:
           name: ${{ inputs.gcchash }}-current-logs
           path: |
             current_logs.zip
+          retention-days: 90
+
+      - name: Upload baseline results
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.gcchash }}-previous-logs
+          path: |
+            previous_logs.zip
           retention-days: 90
 
     outputs:
