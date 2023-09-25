@@ -92,7 +92,7 @@ jobs:
       - name: Download baseline results
         run: |
           pip install pygithub requests
-          python ./scripts/download_single_artifact.py -name ${{ inputs.gcchash }}-current-logs -token ${{ secrets.GITHUB_TOKEN }} -outdir ./temp
+          python ./scripts/download_artifact.py -name ${{ inputs.gcchash }}-current-logs -repo ewlu/riscv-gnu-toolchain -token ${{ secrets.GITHUB_TOKEN }} -outdir ./temp
 
       - name: Extract baseline results
         run: |
@@ -218,7 +218,7 @@ jobs:
           sudo python3 get-pip.py
           pip install -U pyopenssl cryptography pygithub requests
           mkdir temp
-          python ./scripts/download_single_artifact.py -name ${{ inputs.patch_name }}-downloaded-patches -token ${{ secrets.GITHUB_TOKEN }} -outdir ./temp -repo ewlu/riscv-gnu-toolchain
+          python ./scripts/download_artifact.py -name ${{ inputs.patch_name }}-downloaded-patches -repo ewlu/riscv-gnu-toolchain -token ${{ secrets.GITHUB_TOKEN }} -outdir ./temp -repo ewlu/riscv-gnu-toolchain
           ls temp
           unzip temp/${{ inputs.patch_name }}-downloaded-patches
 
