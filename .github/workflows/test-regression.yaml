@@ -76,7 +76,7 @@ jobs:
         run: |
           cd gcc
           git reset --hard origin/master
-          git pull
+          git pull origin master
 
       - name: Apply patches 
         run: |
