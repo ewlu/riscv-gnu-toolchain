@@ -28,7 +28,7 @@ def parse_baseline_hash(url: str, token: str):
 
 def main():
     args = parse_arguments()
-    url = "https://api.github.com/repos/patrick-rivos/riscv-gnu-toolchain/issues?page=1&q=is%3Aissue+-label%3Abisect+-label%3Abuild-failure+-label%3Atestsuite-failure"
+    url = "https://api.github.com/repos/patrick-rivos/riscv-gnu-toolchain/issues?page=1&q=is%3Aissue+-label%3Abisect+-label%3Abuild-failure+-label%3Atestsuite-failure&state=all"
     parse_baseline_hash(url, args.token)
 
 if __name__ == '__main__':
