@@ -91,9 +91,9 @@ jobs:
 
       - name: Create pending issue
         run: |
-          echo "# Build GCC Status ${{ inputs.patch_name }}" > issue.md
-          echo "\nPending\n" >> issue.md
-          echo "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/$run_id\n" >> issue.md
+          printf "---\ntitle: Build GCC Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          printf "\nPending\n" >> issue.md
+          printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
 
       - name: Create apply report issue
         uses: JasonEtco/create-an-issue@v2
@@ -129,9 +129,9 @@ jobs:
 
       - name: Build success report
         run: |
-          echo "# Build GCC Status ${{ inputs.patch_name }}" > issue.md
-          echo "\nSuccess\n" >> issue.md
-          echo "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/$run_id\n" >> issue.md
+          printf "---\ntitle: Build GCC Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          printf "\nSuccess\n" >> issue.md
+          printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
 
       - name: Zip build log
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
@@ -150,9 +150,9 @@ jobs:
       - name: Build failure report
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
-          echo "# Build GCC Status ${{ inputs.patch_name }}" > issue.md
-          echo "\nBuild failure. Please check the ${{ inputs.patch_name }}-build-log artifact\n" >> issue.md
-          echo "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/$run_id\n" >> issue.md
+          printf "---\ntitle: Build GCC Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          printf "\nBuild failure. Please check the ${{ inputs.patch_name }}-build-log artifact\n" >> issue.md
+          printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
 
       - name: Create apply report issue
         uses: JasonEtco/create-an-issue@v2
