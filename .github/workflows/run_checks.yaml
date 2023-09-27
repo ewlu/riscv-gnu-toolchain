@@ -114,8 +114,9 @@ jobs:
 
       - name: Create pending issue
         run: |
-          echo "# Apply Patch Status ${{ inputs.patch_name }}" > issue.md
-          echo "\nPending\n" >> issue.md
+          printf "---\ntitle: Apply Patch Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          printf "\nPending\n" >> issue.md
+          printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
 
       - name: Create apply report issue
         uses: JasonEtco/create-an-issue@v2
@@ -187,15 +188,17 @@ jobs:
       - name: Build early exit report
         if: ${{ steps.early-exit.outputs.early_exit == 'true' }}
         run: |
-          echo "# Apply Patch Status ${{ inputs.patch_name }}" > issue.md
-          echo "\nFailed to apply patch\n" >> issue.md
+          printf "---\ntitle: Apply Patch Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          printf "\nFailed to apply patch\n" >> issue.md
           cat out >> issue.md
+          printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
 
       - name: Build success report
         if: ${{ steps.apply-tip-of-tree.outputs.apply_tot == 'true' }}
         run: |
-          echo "# Apply Patch Status ${{ inputs.patch_name }}" > issue.md
-          echo "\nSuccess\n" >> issue.md
+          printf "---\ntitle: Apply Patch Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          printf "\nSuccess\n" >> issue.md
+          printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
 
       - name: Update apply issue
         uses: JasonEtco/create-an-issue@v2
