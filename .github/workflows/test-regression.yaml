@@ -89,10 +89,25 @@ jobs:
       - name: Install dependencies
         run: sudo ./.github/setup-apt.sh
 
+      - name: Create pending issue
+        run: |
+          echo "# Build GCC Status ${{ inputs.patch_name }}" > issue.md
+          echo "\nPending\n" >> issue.md
+          echo "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/$run_id\n" >> issue.md
+
+      - name: Create apply report issue
+        uses: JasonEtco/create-an-issue@v2
+        id: create-issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          filename: issue.md
+          update_existing: true
+
       - name: Report build
         run: |
           # TODO: create placeholder issue
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build start' -rid ${{ github.run_id }} -state 'pending' -context 'build'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build start' -iid ${{ steps.create-issue.outputs.number }} -state 'pending' -context 'build'
         continue-on-error: true
 
       - name: Configure
@@ -110,13 +125,50 @@ jobs:
         id: build-gcc
         run: |
           cd build
-          make -j $(nproc) ${{ inputs.mode }}
+          make -j $(nproc) ${{ inputs.mode }} 2>&1 | tee ${{ inputs.patch_name }}-build-log.txt
+
+      - name: Build success report
+        run: |
+          echo "# Build GCC Status ${{ inputs.patch_name }}" > issue.md
+          echo "\nSuccess\n" >> issue.md
+          echo "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/$run_id\n" >> issue.md
+
+      - name: Zip build log
+        if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
+        run: |
+          zip ${{ inputs.patch_name }}-build-log.zip ${{ inputs.patch_name }}-build-log.txt
+
+      - name: Upload build log
+        if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.patch_name }}-build-log
+          path: |
+            ${{ inputs.patch_name }}-build-log.zip
+          retention-days: 90
+
+      - name: Build failure report
+        if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
+        run: |
+          echo "# Build GCC Status ${{ inputs.patch_name }}" > issue.md
+          echo "\nBuild failure. Please check the ${{ inputs.patch_name }}-build-log artifact\n" >> issue.md
+          echo "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/$run_id\n" >> issue.md
+
+      - name: Create apply report issue
+        uses: JasonEtco/create-an-issue@v2
+        if: ${{ always() }}
+        id: update-issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          filename: issue.md
+          update_existing: true
 
       - name: Report error on build-failure
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
           # TODO: update issue build failure
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build failure' -rid ${{ github.run_id }} -state 'fail' -context 'build'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build failure' -iid ${{ steps.update-issue.outputs.number }} -state 'fail' -context 'build'
         continue-on-error: true
 
       - name: Remove sources to reclaim disk space
@@ -158,7 +210,7 @@ jobs:
       - name: Report build success
         run: |
           # TODO: update issue build success
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build success' -rid ${{ github.run_id }} -state 'success' -context 'build'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build success' -iid ${{ steps.update-issue.outputs.number }} -state 'success' -context 'build'
         continue-on-error: true
 
     outputs:

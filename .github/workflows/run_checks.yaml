@@ -116,6 +116,7 @@ jobs:
         run: |
           echo "# Apply Patch Status ${{ inputs.patch_name }}" > issue.md
           echo "\nPending\n" >> issue.md
+          echo "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/$run_id\n" >> issue.md
 
       - name: Create apply report issue
         uses: JasonEtco/create-an-issue@v2
@@ -190,12 +191,14 @@ jobs:
           echo "# Apply Patch Status ${{ inputs.patch_name }}" > issue.md
           echo "\nFailed to apply patch\n" >> issue.md
           cat out >> issue.md
+          echo "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/$run_id\n" >> issue.md
 
       - name: Build success report
         if: ${{ steps.apply-tip-of-tree.outputs.apply_tot == 'true' }}
         run: |
           echo "# Apply Patch Status ${{ inputs.patch_name }}" > issue.md
           echo "\nSuccess\n" >> issue.md
+          echo "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/$run_id\n" >> issue.md
 
       - name: Update apply issue
         uses: JasonEtco/create-an-issue@v2
