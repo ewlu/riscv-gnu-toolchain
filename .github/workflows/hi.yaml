@@ -27,8 +27,8 @@ jobs:
         run: |
           echo $'something\n${{ inputs.multilib }}\n' > out
           cat out
-          printf "something\n${{ inputs.target }}\n" > test
-          cat test
+          printf "something\n${{ inputs.target }}\n" > out
+          cat out
       
         
 
