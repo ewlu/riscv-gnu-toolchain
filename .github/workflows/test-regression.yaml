@@ -91,7 +91,7 @@ jobs:
 
       - name: Create pending issue
         run: |
-          printf "---\ntitle: Build GCC Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          printf -- "---\ntitle: Build GCC Status ${{ inputs.patch_name }}\n---\n" > issue.md
           printf "\nPending\n" >> issue.md
           printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
 
@@ -129,7 +129,7 @@ jobs:
 
       - name: Build success report
         run: |
-          printf "---\ntitle: Build GCC Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          printf -- "---\ntitle: Build GCC Status ${{ inputs.patch_name }}\n---\n" > issue.md
           printf "\nSuccess\n" >> issue.md
           printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
 
@@ -150,7 +150,7 @@ jobs:
       - name: Build failure report
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
-          printf "---\ntitle: Build GCC Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          printf -- "---\ntitle: Build GCC Status ${{ inputs.patch_name }}\n---\n" > issue.md
           printf "\nBuild failure. Please check the ${{ inputs.patch_name }}-build-log artifact\n" >> issue.md
           printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
 

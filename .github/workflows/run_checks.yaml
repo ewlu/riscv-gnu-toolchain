@@ -114,7 +114,7 @@ jobs:
 
       - name: Create pending issue
         run: |
-          printf "---\ntitle: Apply Patch Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          printf -- "---\ntitle: Apply Patch Status ${{ inputs.patch_name }}\n---\n" > issue.md
           printf "\nPending\n" >> issue.md
           printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
 
@@ -188,7 +188,7 @@ jobs:
       - name: Build early exit report
         if: ${{ steps.early-exit.outputs.early_exit == 'true' }}
         run: |
-          printf "---\ntitle: Apply Patch Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          printf -- "---\ntitle: Apply Patch Status ${{ inputs.patch_name }}\n---\n" > issue.md
           printf "\nFailed to apply patch\n" >> issue.md
           cat out >> issue.md
           printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
@@ -196,7 +196,7 @@ jobs:
       - name: Build success report
         if: ${{ steps.apply-tip-of-tree.outputs.apply_tot == 'true' }}
         run: |
-          printf "---\ntitle: Apply Patch Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          printf -- "---\ntitle: Apply Patch Status ${{ inputs.patch_name }}\n---\n" > issue.md
           printf "\nSuccess\n" >> issue.md
           printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
 
