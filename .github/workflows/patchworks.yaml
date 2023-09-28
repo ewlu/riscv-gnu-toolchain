@@ -32,7 +32,7 @@ jobs:
           mkdir patchworks_urls
 
       - name: Update times for workflow dispatch
-        if: ${{ inputs.backup_time != '' }}
+        if: ${{ inputs.timestamp != '' }}
         run: |
           TZ=UTC date -d "@$((($(date -d '${{ inputs.timestamp }}' +%s) + 450) / 900 * 900))" '+%Y-%m-%dT%H:%M:%S' > date_recent.txt
           TZ=UTC date -d "@$((($(date -d '${{ inputs.timestamp }}' +%s) - 450) / 900 * 900))" '+%Y-%m-%dT%H:%M:%S' > date_old.txt
