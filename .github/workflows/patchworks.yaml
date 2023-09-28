@@ -8,6 +8,13 @@ on:
   pull_request:
     branches:
       - patchworks-ci
+  workflow_dispatch:
+    branches:
+      - patchworks-ci
+    inputs:
+      timestamp:
+        description: 'Patch Timestamp (UTC)'
+        required: true
 
 jobs:
   fetch_patches:
@@ -16,14 +23,25 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get list of new patches
-        run: |
+      - name: Get timestamps and make directories
           TZ=UTC date -d "@$((($(date +%s) + 450) / 900 * 900))" '+%Y-%m-%dT%H:%M:%S' > date_recent.txt
           TZ=UTC date -d "@$((($(date +%s) - 450) / 900 * 900))" '+%Y-%m-%dT%H:%M:%S' > date_old.txt
           TZ=UTC date -d "@$((($(date +%s) - 1350) / 900 * 900))" '+%Y-%m-%dT%H:%M:%S' > date_older.txt
-
           mkdir patch_urls
           mkdir patchworks_urls
+
+      - name: Update times for workflow dispatch
+        if: ${{ inputs.backup_time != '' }}
+        run: |
+          TZ=UTC date -d "@$((($(date -d '${{ inputs.timestamp }}' +%s) + 450) / 900 * 900))" '+%Y-%m-%dT%H:%M:%S' > date_recent.txt
+          TZ=UTC date -d "@$((($(date -d '${{ inputs.timestamp }}' +%s) - 450) / 900 * 900))" '+%Y-%m-%dT%H:%M:%S' > date_old.txt
+          TZ=UTC date -d "@$((($(date -d '${{ inputs.timestamp }}' +%s) - 1350) / 900 * 900))" '+%Y-%m-%dT%H:%M:%S' > date_older.txt
+          cat date_older
+          cat date_old
+          cat date_recent
+
+      - name: Get list of new patches
+        run: |
           python scripts/create_patches_files.py -backup $(cat date_older.txt) -start $(cat date_old.txt) -end $(cat date_recent.txt)
 
       - name: List patch artifacts
