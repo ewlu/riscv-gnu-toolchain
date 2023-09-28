@@ -19,7 +19,11 @@ def parse_baseline_hash(url: str, token: str):
               "X-GitHub-Api-Version": "2022-11-28"}
     r = requests.get(url, params=params)
     issues = json.loads(r.text)
-    issue = issues[0]
+    issue = None
+    for issue in issues:
+        if 'pull_request' not in issue.keys():
+            break
+
     print(f"Baseline from {issue['title']}")
     assert("Testsuite Status" in issue["title"])
     with open("./baseline.txt", "w") as f:
