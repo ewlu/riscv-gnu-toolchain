@@ -165,6 +165,7 @@ jobs:
   patch_matrix:
     needs: [fetch_patches, prepare_sources]
     strategy:
+      fail-fast: false
       matrix:
         patch_name: ${{ fromJSON(needs.fetch_patches.outputs.list_of_patch_names) }}
     uses: ./.github/workflows/run_checks.yaml
