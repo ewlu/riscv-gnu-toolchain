@@ -18,7 +18,7 @@ jobs:
           wget https://bootstrap.pypa.io/get-pip.py
           sudo python3 get-pip.py
           pip install -U pyopenssl cryptography
-          pip install pygithub requests
+          pip install pygithub==1.59.1 requests
 
       - name: Get patch-name
         id: patch-name
