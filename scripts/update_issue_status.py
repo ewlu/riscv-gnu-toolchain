@@ -55,19 +55,22 @@ def get_issue(token: str, patch: str):
 def get_current_status(issue):
     status = {}
     for line in issue['body'].split('\n'):
-        if line == '' or ':' not in line:
+        if 'Target' in line or '---' in line:
             continue
         if "Associated" in line:
             break
-        target, state = line.split(':')
+        target, state = line.split('|')[1:-1]
         status[target] = state
         
     return status
 
 def build_new_issue(status: Dict[str, str], patch: str, check: str):
     result = f"---\ntitle: {check} Status {patch}\n---\n"
+    result += "|Target|Status|\n"
+    result += "|---|---|\n"
     for k, v in status.items():
-        result += f"{k}: {v}\n"
+        result += f"|{k}|{v.strip()}|\n"
+    result += "\n"
     with open("issue.md", "w") as f:
         f.write(result)
 
