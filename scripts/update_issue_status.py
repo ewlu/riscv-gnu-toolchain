@@ -38,7 +38,7 @@ def parse_arguments():
     )
     return parser.parse_args()
     
-def get_issue(token: str, patch: str):
+def get_issue(token: str, patch: str, check: str):
     params = {"Accept": "application/vnd.github+json",
               "Authorization": f"token {token}",
               "X-GitHub-Api-Version": "2022-11-28"}
@@ -47,7 +47,7 @@ def get_issue(token: str, patch: str):
     issues = json.loads(r.text)
     found_issue = None
     for issue in issues:
-        if patch in issue["title"]:
+        if patch in issue["title"] and check in issue["title"]:
             found_issue = issue
             break
     return found_issue
@@ -77,7 +77,7 @@ def build_new_issue(status: Dict[str, str], patch: str, check: str):
 
 def main():
     args = parse_arguments()
-    issue = get_issue(args.token, args.patch)
+    issue = get_issue(args.token, args.patch, args.check)
     if issue is None:
         status = {args.target: args.state}
     else:

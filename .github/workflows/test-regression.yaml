@@ -134,7 +134,7 @@ jobs:
       - name: Zip build log
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
-          zip ${{ inputs.patch_name }}-build-log.zip ${{ inputs.patch_name }}-build-log.txt
+          zip ${{ inputs.patch_name }}-build-log.zip build/${{ inputs.patch_name }}-build-log.txt
 
       - name: Upload build log
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
@@ -576,7 +576,7 @@ jobs:
       - name: Zip build log
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
-          zip ${{ inputs.patch_name }}-build-log.zip ${{ inputs.patch_name }}-build-log.txt
+          zip ${{ inputs.patch_name }}-build-log.zip build/${{ inputs.patch_name }}-build-log.txt
 
       - name: Upload build log
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}

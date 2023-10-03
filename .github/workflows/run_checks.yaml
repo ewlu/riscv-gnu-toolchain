@@ -142,7 +142,9 @@ jobs:
           cat out_base
           if [[ $(cat out_base | wc -l) != 0 ]]; then
             echo "Failed to apply patch cleanly to baseline hash"
+            echo "\`\`\`" >> out_base
             git am --show-current-patch=diff &>> out_base
+            echo "\`\`\`" >> out_base
             git am --abort
             echo "apply_baseline=false" >> $GITHUB_OUTPUT
           else
@@ -161,7 +163,9 @@ jobs:
           cat out_tot
           if [[ $(cat out_tot | wc -l) != 0 ]]; then
             echo "Failed to apply patch cleanly to tip of tree"
+            echo "\`\`\`" >> out_tot
             git am --show-current-patch=diff &>> out_tot
+            echo "\`\`\`" >> out_tot
             git am --abort
             echo "apply_tot=false" >> $GITHUB_OUTPUT
           else
@@ -188,8 +192,11 @@ jobs:
         run: |
           printf -- "---\ntitle: Apply Patch Status ${{ inputs.patch_name }}\n---\n" > issue.md
           printf "\nFailed to apply patch\n" >> issue.md
-          cat out_base out_tot >> issue.md 
-          printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> issue.md
+          cat gcc/out_base gcc/out_tot >> issue.md 
+          head -c 65000 issue.md > trimmed_issue.md
+          if [ $(cat trimmed_issue.md | wc -l) -ne $(cat issue.md | wc -l) ]; then printf "\n\`\`\`\nIssue text has been trimmed. Please check logs for the untrimmed issue." >> trimmed_issue.md; fi
+          printf "\nAssociated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}\n" >> trimmed_issue.md
+          mv trimmed_issue.md issue.md
 
       - name: Build success report
         if: ${{ steps.apply-tip-of-tree.outputs.apply_tot == 'true' }}
