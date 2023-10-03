@@ -89,12 +89,12 @@ jobs:
       - name: Install dependencies
         run: sudo ./.github/setup-apt.sh
 
-      - name: Create pending issue
+      - name: Update pending issue
         run: |
           python scripts/update_issue_status.py -token ${{ secrets.GITHUB_TOKEN }} -state pending -patch ${{ inputs.patch_name }} -target ${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }} -check 'Build GCC'
           echo "Associated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}" >> issue.md
 
-      - name: Create apply report issue
+      - name: Create build report issue
         uses: JasonEtco/create-an-issue@v2
         id: create-issue
         env:
@@ -150,7 +150,7 @@ jobs:
           python scripts/update_issue_status.py -token ${{ secrets.GITHUB_TOKEN }} -state 'Build failure. Please check the ${{ inputs.patch_name }}-build-log artifact' -patch ${{ inputs.patch_name }} -target ${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }} -check 'Build GCC'
           echo "Associated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}" >> issue.md
 
-      - name: Create apply report issue
+      - name: Update build report issue
         uses: JasonEtco/create-an-issue@v2
         if: ${{ always() }}
         id: update-issue

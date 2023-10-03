@@ -69,7 +69,7 @@ def build_new_issue(status: Dict[str, str], patch: str, check: str):
     result = f"---\ntitle: {check} Status {patch}\n---\n"
     result += "|Target|Status|\n"
     result += "|---|---|\n"
-    for k, v in sorted(status.items()):
+    for k, v in status.items():
         result += f"|{k}|{v.strip()}|\n"
     result += "\n"
     with open("issue.md", "w") as f:

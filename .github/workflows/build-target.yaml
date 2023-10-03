@@ -20,7 +20,27 @@ on:
         type: string
 
 jobs:
+  build-issue:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create build pending issue
+        run: |
+          printf -- "---\ntitle: Build GCC Status ${{ inputs.patch_name }}\n---\n" > issue.md
+          echo "Associated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}" >> issue.md
+          
+      - name: Create build report issue
+        uses: JasonEtco/create-an-issue@v2
+        id: create-issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          filename: issue.md
+          update_existing: true
+
   creg: # Check Regressions. Short name so I can see the matrix string in github
+    needs: [build-issue]
     strategy:
       fail-fast: false
       matrix:
@@ -48,6 +68,7 @@ jobs:
       run_on_self_hosted: false
 
   cmreg: # Check Multilib Regressions. Short name so I can see the matrix string in github
+    needs: [build-issue]
     strategy:
       fail-fast: false
       matrix:
@@ -67,7 +88,7 @@ jobs:
 
   summarize:
     if: "!cancelled()" # Generate github issues even when some (or all) targets fail to build
-    needs: [creg, cmreg]
+    needs: [build-issue, creg, cmreg]
     permissions:
       issues: write
     uses: ./.github/workflows/generate-precommit-summary.yaml
