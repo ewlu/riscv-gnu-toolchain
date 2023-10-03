@@ -32,7 +32,6 @@ def get_workflow_runs(token: str):
     return runs
 
 def get_run_timestamp(runs, run_id: str):
-    print(f"runs[0] id: {runs[0]['id']}, passed run id: {run_id}, are equal: {runs[0]['id'] == run_id}")
     with open("date_cur.txt", "w") as f:
         if str(runs[0]['id']) != run_id:
             f.write(runs[0]['created_at'])
