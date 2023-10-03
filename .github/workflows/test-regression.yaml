@@ -123,6 +123,7 @@ jobs:
         id: build-gcc
         run: |
           cd build
+          set -o pipefail
           make -j $(nproc) ${{ inputs.mode }} 2>&1 | tee ${{ inputs.patch_name }}-build-log.txt
 
       - name: Build success report
@@ -564,6 +565,7 @@ jobs:
         id: build-gcc
         run: |
           cd build
+          set -o pipefail
           make ${{ inputs.mode }} -j $(nproc) 2>&1 | tee ${{ inputs.patch_name }}-build-log.txt
 
       - name: Build success report
