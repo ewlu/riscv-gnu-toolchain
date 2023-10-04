@@ -78,7 +78,7 @@ jobs:
           git reset --hard origin/master
           git pull origin master
 
-      - name: Apply patches 
+      - name: Apply patches
         run: |
           cd gcc
           git config user.name "GitHub Actions Bot"
@@ -116,7 +116,7 @@ jobs:
             ../configure --prefix=$(pwd) --enable-multilib --with-multilib-generator="rv64gc-lp64d--;rv32gc-ilp32d--"
           else
             TARGET_TUPLE=($(echo ${{ inputs.target }} | tr "-" "\n"))
-            ../configure --prefix=$(pwd) --with-arch=${TARGET_TUPLE[0]} --with-abi=${TARGET_TUPLE[1]}
+            ../configure --prefix=$(pwd) --with-multilib-generator="${TARGET_TUPLE[0]}-${TARGET_TUPLE[1]}--"
           fi
 
       - name: Make gcc
@@ -274,7 +274,7 @@ jobs:
             ../configure --prefix=$(pwd) --with-multilib-generator="rv64gc-lp64d--;rv32gc-ilp32d--"
           else
             TARGET_TUPLE=($(echo ${{ inputs.target }} | tr "-" "\n"))
-            ../configure --prefix=$(pwd) --with-arch=${TARGET_TUPLE[0]} --with-abi=${TARGET_TUPLE[1]}
+            ../configure --prefix=$(pwd) --with-multilib-generator="${TARGET_TUPLE[0]}-${TARGET_TUPLE[1]}--"
           fi
 
       - name: Restore stage2
@@ -433,7 +433,7 @@ jobs:
             ../configure --prefix=$(pwd) --with-multilib-generator="rv64gc-lp64d--;rv32gc-ilp32d--"
           else
             TARGET_TUPLE=($(echo ${{ inputs.target }} | tr "-" "\n"))
-            ../configure --prefix=$(pwd) --with-arch=${TARGET_TUPLE[0]} --with-abi=${TARGET_TUPLE[1]}
+            ../configure --prefix=$(pwd) --with-multilib-generator="${TARGET_TUPLE[0]}-${TARGET_TUPLE[1]}--"
           fi
 
       - name: Build
@@ -558,7 +558,7 @@ jobs:
             ../configure --prefix=$(pwd) --with-multilib-generator="rv64gc-lp64d--;rv32gc-ilp32d--"
           else
             TARGET_TUPLE=($(echo ${{ inputs.target }} | tr "-" "\n"))
-            ../configure --prefix=$(pwd) --with-arch=${TARGET_TUPLE[0]} --with-abi=${TARGET_TUPLE[1]}
+            ../configure --prefix=$(pwd) --with-multilib-generator="${TARGET_TUPLE[0]}-${TARGET_TUPLE[1]}--"
           fi
 
       - name: Build
