@@ -122,7 +122,7 @@ jobs:
       - name: Make log name
         id: build-log
         run: |
-          export BUILD_LOG_NAME=$(tail -n 1 ../patches/${{ inputs.patch_name }})-build-log
+          export BUILD_LOG_NAME=$(tail -n 1 patches/${{ inputs.patch_name }})-build-log
           echo "build_log_name=$BUILD_LOG_NAME" >> $GITHUB_OUTPUT
 
       - name: Make gcc
@@ -570,7 +570,7 @@ jobs:
       - name: Make log name
         id: build-log
         run: |
-          export BUILD_LOG_NAME=$(tail -n 1 ../patches/${{ inputs.patch_name }})-build-log
+          export BUILD_LOG_NAME=$(tail -n 1 patches/${{ inputs.patch_name }})-build-log
           echo "build_log_name=$BUILD_LOG_NAME" >> $GITHUB_OUTPUT
 
       - name: Build
