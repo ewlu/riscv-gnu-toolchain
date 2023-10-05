@@ -28,6 +28,14 @@ jobs:
           echo $PATCH_NAME
           echo "patch_name=$PATCH_NAME" >> $GITHUB_OUTPUT
 
+      - name: Get check
+        id: check
+        run: |
+          export title="${{ github.event.issue.title }}"
+          export CHECK=$(echo ${title%% *} | tr '[:upper:]' '[:lower:]')
+          echo $CHECK
+          echo "check=$CHECK" >> $GITHUB_OUTPUT
+
       - name: Download patch
         run: |
           mkdir temp
@@ -49,6 +57,7 @@ jobs:
     outputs:
       patch_name: ${{ steps.patch-name.outputs.patch_name }}
       patch_id: ${{ steps.patch-id.outputs.patch_id }}
+      check: ${{ steps.check.outputs.check }}
 
   report-pass:
     needs: [get-patch-info]
@@ -68,7 +77,7 @@ jobs:
 
       - name: Report pass
         run: |
-          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc 'testsuite success' -iid ${{ github.event.issue.number }} -state 'success' -context 'testing'
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} success' -iid ${{ github.event.issue.number }} -state 'success' -context '${{ needs.get-patch-info.outputs.check }}'
 
 
   report-warn:
@@ -89,7 +98,7 @@ jobs:
 
       - name: Report Warning
         run: |
-          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc 'testsuite warning' -iid ${{ github.event.issue.number }} -state 'warning' -context 'testing'
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} warning' -iid ${{ github.event.issue.number }} -state 'warning' -context '${{ needs.get-patch-info.outputs.check }}'
 
 
   report-error:
@@ -110,5 +119,5 @@ jobs:
 
       - name: Report Error
         run: |
-          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc 'testsuite fail' -iid ${{ github.event.issue.number }} -state 'fail' -context 'testing'
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} fail' -iid ${{ github.event.issue.number }} -state 'fail' -context '${{ needs.get-patch-info.outputs.check }}'
 
