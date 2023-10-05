@@ -119,14 +119,18 @@ jobs:
             ../configure --prefix=$(pwd) --with-multilib-generator="${TARGET_TUPLE[0]}-${TARGET_TUPLE[1]}--"
           fi
 
+      - name: Make log name
+        id: build-log
+        run: |
+          export BUILD_LOG_NAME=$(tail -n 1 ../patches/${{ inputs.patch_name }})-build-log
+          echo "build_log_name=$BUILD_LOG_NAME" >> $GITHUB_OUTPUT
+
       - name: Make gcc
         id: build-gcc
         run: |
           cd build
           set -o pipefail
-          export BUILD_LOG_NAME=$(tail -n 1 ../patches/${{ inputs.patch_name }})-build-log
-          make -j $(nproc) ${{ inputs.mode }} 2>&1 | tee $BUILD_LOG_NAME.txt
-          echo "build_log_name=$BUILD_LOG_NAME" >> $GITHUB_OUTPUT
+          make -j $(nproc) ${{ inputs.mode }} 2>&1 | tee ${{ steps.build-log.outputs.build_log_name }}.txt
 
       - name: Build success report
         run: |
@@ -136,21 +140,21 @@ jobs:
       - name: Zip build log
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
-          zip ${{ steps.build-gcc.outputs.build_log_name }}.zip build/${{ steps.build-gcc.outputs.build_log_name }}.txt
+          zip ${{ steps.build-log.outputs.build_log_name }}.zip build/${{ steps.build-log.outputs.build_log_name }}.txt
 
       - name: Upload build log
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.build-gcc.outputs.build_log_name }}
+          name: ${{ steps.build-log.outputs.build_log_name }}
           path: |
-            ${{ steps.build-gcc.outputs.build_log_name }}.zip
+            ${{ steps.build-log.outputs.build_log_name }}.zip
           retention-days: 90
 
       - name: Build failure report
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
-          python scripts/update_issue_status.py -token ${{ secrets.GITHUB_TOKEN }} -state 'Build failure. Please check the ${{ steps.build-gcc.outputs.build_log_name }} artifact' -patch ${{ inputs.patch_name }} -target ${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }} -check 'Build GCC'
+          python scripts/update_issue_status.py -token ${{ secrets.GITHUB_TOKEN }} -state 'Build failure. Please check the ${{ steps.build-log.outputs.build_log_name }} artifact' -patch ${{ inputs.patch_name }} -target ${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }} -check 'Build GCC'
           echo "Associated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}" >> issue.md
 
       - name: Update build report issue
@@ -563,14 +567,18 @@ jobs:
             ../configure --prefix=$(pwd) --with-multilib-generator="${TARGET_TUPLE[0]}-${TARGET_TUPLE[1]}--"
           fi
 
+      - name: Make log name
+        id: build-log
+        run: |
+          export BUILD_LOG_NAME=$(tail -n 1 ../patches/${{ inputs.patch_name }})-build-log
+          echo "build_log_name=$BUILD_LOG_NAME" >> $GITHUB_OUTPUT
+
       - name: Build
         id: build-gcc
         run: |
           cd build
           set -o pipefail
-          export BUILD_LOG_NAME=$(tail -n 1 ../patches/${{ inputs.patch_name }})-build-log
-          make -j $(nproc) ${{ inputs.mode }} 2>&1 | tee $BUILD_LOG_NAME.txt
-          echo "build_log_name=$BUILD_LOG_NAME" >> $GITHUB_OUTPUT
+          make -j $(nproc) ${{ inputs.mode }} 2>&1 | tee ${{ steps.build-log.outputs.build_log_name }}.txt
 
       - name: Build success report
         run: |
@@ -580,21 +588,21 @@ jobs:
       - name: Zip build log
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
-          zip ${{ steps.build-gcc.outputs.build_log_name }}.zip build/${{ steps.build-gcc.outputs.build_log_name }}.txt
+          zip ${{ steps.build-log.outputs.build_log_name }}.zip build/${{ steps.build-log.outputs.build_log_name }}.txt
 
       - name: Upload build log
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.build-gcc.outputs.build_log_name }}
+          name: ${{ steps.build-log.outputs.build_log_name }}
           path: |
-            ${{ steps.build-gcc.outputs.build_log_name }}.zip
+            ${{ steps.build-log.outputs.build_log_name }}.zip
           retention-days: 9
 
       - name: Build failure report
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
-          python scripts/update_issue_status.py -token ${{ secrets.GITHUB_TOKEN }} -state 'Build failure. Please check the ${{ steps.build-gcc.outputs.build_log_name }} artifact' -patch ${{ inputs.patch_name }} -target ${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }} -check 'Build GCC'
+          python scripts/update_issue_status.py -token ${{ secrets.GITHUB_TOKEN }} -state 'Build failure. Please check the ${{ steps.build-log.outputs.build_log_name }} artifact' -patch ${{ inputs.patch_name }} -target ${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }} -check 'Build GCC'
           echo "Associated run is: https://github.com/ewlu/riscv-gnu-toolchain/actions/runs/${{ github.run_id }}" >> issue.md
 
       - name: Create apply report issue
