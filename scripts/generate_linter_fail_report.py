@@ -22,7 +22,7 @@ def parse_arguments():
 
 def generate_markdown(linter_log: str, patch_name: str, outdir: str="./linter_fail_report.md"):
     header = f"""---
-title: check_GNU_style.py {patch_name}
+title: Linter Status {patch_name}
 labels: linter-failure
 ---
 The following issues have been found with {patch_name}.
