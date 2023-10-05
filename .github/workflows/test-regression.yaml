@@ -125,7 +125,7 @@ jobs:
           cd build
           set -o pipefail
           export BUILD_LOG_NAME=$(tail -n 1 ../patches/${{ inputs.patch_name }})-build-log
-          make -j $(nproc) ${{ inputs.mode }} 2>&1 | tee $BUILD_LOG_NAME
+          make -j $(nproc) ${{ inputs.mode }} 2>&1 | tee $BUILD_LOG_NAME.txt
           echo "build_log_name=$BUILD_LOG_NAME" >> $GITHUB_OUTPUT
 
       - name: Build success report
@@ -569,7 +569,7 @@ jobs:
           cd build
           set -o pipefail
           export BUILD_LOG_NAME=$(tail -n 1 ../patches/${{ inputs.patch_name }})-build-log
-          make -j $(nproc) ${{ inputs.mode }} 2>&1 | tee $BUILD_LOG_NAME
+          make -j $(nproc) ${{ inputs.mode }} 2>&1 | tee $BUILD_LOG_NAME.txt
           echo "build_log_name=$BUILD_LOG_NAME" >> $GITHUB_OUTPUT
 
       - name: Build success report
