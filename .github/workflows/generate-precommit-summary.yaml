@@ -309,7 +309,7 @@ jobs:
         run: |
           python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'Testing failed' -iid ${{ steps.create-issue.outputs.number }} -state 'fail' -context 'test' -token ${{ secrets.PATCHWORK_API }}
         continue-on-error: true
-          
+
       - name: Report Warning
         if: ${{ steps.report-failure.outcome == 'skipped' && inputs.build_only == 'true' }}
         id: report-warning
