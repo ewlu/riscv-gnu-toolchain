@@ -43,8 +43,7 @@ jobs:
           
       - name: Extract patch
         run: |
-          mv temp/patches.zip .
-          unzip patches.zip
+          unzip ${{ steps.patch-name.outputs.patch_name }}-downloaded-patches
           unzip ${{ steps.patch-name.outputs.patch_name }}-downloaded-patches.zip
 
       - name: Get patch id
@@ -77,7 +76,7 @@ jobs:
 
       - name: Report pass
         run: |
-          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} success' -iid ${{ github.event.issue.number }} -state 'success' -context '${{ needs.get-patch-info.outputs.check }}' -comment
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} success' -iid ${{ github.event.issue.number }} -state 'success' -context '${{ needs.get-patch-info.outputs.check }}' -token ${{ secrets.PATCHWORK_API }} -comment
 
 
   report-warn:
@@ -98,7 +97,7 @@ jobs:
 
       - name: Report Warning
         run: |
-          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} warning' -iid ${{ github.event.issue.number }} -state 'warning' -context '${{ needs.get-patch-info.outputs.check }}' -comment
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} warning' -iid ${{ github.event.issue.number }} -state 'warning' -context '${{ needs.get-patch-info.outputs.check }}' -token ${{ secrets.PATCHWORK_API }} -comment
 
 
   report-error:
@@ -119,5 +118,5 @@ jobs:
 
       - name: Report Error
         run: |
-          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} fail' -iid ${{ github.event.issue.number }} -state 'fail' -context '${{ needs.get-patch-info.outputs.check }}' -comment
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} fail' -iid ${{ github.event.issue.number }} -state 'fail' -context '${{ needs.get-patch-info.outputs.check }}' -token ${{ secrets.PATCHWORK_API }} -comment
 
