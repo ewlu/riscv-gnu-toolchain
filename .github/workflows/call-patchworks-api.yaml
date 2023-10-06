@@ -77,7 +77,7 @@ jobs:
 
       - name: Report pass
         run: |
-          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} success' -iid ${{ github.event.issue.number }} -state 'success' -context '${{ needs.get-patch-info.outputs.check }}'
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} success' -iid ${{ github.event.issue.number }} -state 'success' -context '${{ needs.get-patch-info.outputs.check }}' -comment
 
 
   report-warn:
@@ -98,7 +98,7 @@ jobs:
 
       - name: Report Warning
         run: |
-          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} warning' -iid ${{ github.event.issue.number }} -state 'warning' -context '${{ needs.get-patch-info.outputs.check }}'
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} warning' -iid ${{ github.event.issue.number }} -state 'warning' -context '${{ needs.get-patch-info.outputs.check }}' -comment
 
 
   report-error:
@@ -119,5 +119,5 @@ jobs:
 
       - name: Report Error
         run: |
-          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} fail' -iid ${{ github.event.issue.number }} -state 'fail' -context '${{ needs.get-patch-info.outputs.check }}'
+          python scripts/post_check_to_patchworks.py -pid ${{ needs.get-patch-info.outputs.patch_id }} -desc '${{ needs.get-patch-info.outputs.check }} fail' -iid ${{ github.event.issue.number }} -state 'fail' -context '${{ needs.get-patch-info.outputs.check }}' -comment
 
