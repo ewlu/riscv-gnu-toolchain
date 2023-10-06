@@ -105,7 +105,7 @@ jobs:
 
       - name: Report build
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build start' -iid ${{ steps.create-issue.outputs.number }} -state 'pending' -context 'build--${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }}' -token 'PLACEHOLDER'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'Build started' -iid ${{ steps.create-issue.outputs.number }} -state 'pending' -context 'build--${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }}' -token 'PLACEHOLDER'
         continue-on-error: true
 
       - name: Configure
@@ -170,7 +170,7 @@ jobs:
       - name: Report error on build-failure
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build failure' -iid ${{ steps.update-issue.outputs.number }} -state 'fail' -context 'build--${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }}' -token 'PLACEHOLDER'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'Build failed' -iid ${{ steps.update-issue.outputs.number }} -state 'fail' -context 'build--${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }}' -token 'PLACEHOLDER'
         continue-on-error: true
 
       - name: Remove sources to reclaim disk space
@@ -211,7 +211,7 @@ jobs:
 
       - name: Report build success
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build success' -iid ${{ steps.update-issue.outputs.number }} -state 'success' -context 'build--${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }}' -token 'PLACEHOLDER'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'Build passed' -iid ${{ steps.update-issue.outputs.number }} -state 'success' -context 'build--${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }}' -token 'PLACEHOLDER'
         continue-on-error: true
 
     outputs:
@@ -331,7 +331,7 @@ jobs:
 
       - name: Report testing
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'testing start' -rid ${{ github.run_id }} -state 'pending' -context 'test' -token 'PLACEHOLDER'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'Testing started' -rid ${{ github.run_id }} -state 'pending' -context 'test' -token 'PLACEHOLDER'
         continue-on-error: true
 
       - name: Reinstall stage2
@@ -553,7 +553,7 @@ jobs:
 
       - name: Report build
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build start' -iid ${{ steps.create-issue.outputs.number }} -state 'pending' -context 'build--${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }}' -token 'PLACEHOLDER'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'Build started' -iid ${{ steps.create-issue.outputs.number }} -state 'pending' -context 'build--${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }}' -token 'PLACEHOLDER'
         continue-on-error: true
 
       - name: Configure
@@ -618,12 +618,12 @@ jobs:
       - name: Report error on build-failure
         if: ${{ always() && steps.build-gcc.outcome == 'failure' }}
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build failure' -iid ${{ steps.update-issue.outputs.number }} -state 'fail' -context 'build--${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }}' -token 'PLACEHOLDER'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'Build failed' -iid ${{ steps.update-issue.outputs.number }} -state 'fail' -context 'build--${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }}' -token 'PLACEHOLDER'
         continue-on-error: true
 
       - name: Report build success
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'build success' -iid ${{ steps.update-issue.outputs.number }} -state 'success' -context 'build--${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }}' -token 'PLACEHOLDER'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'Build passed' -iid ${{ steps.update-issue.outputs.number }} -state 'success' -context 'build--${{ inputs.mode }}-${{ inputs.target }}-${{ inputs.multilib }}' -token 'PLACEHOLDER'
         continue-on-error: true
 
       - name: Zip binaries
@@ -640,7 +640,7 @@ jobs:
 
       - name: Report testing
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'testing start' -rid ${{ github.run_id }} -state 'pending' -context 'test' -token 'PLACEHOLDER'
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 patches/${{ inputs.patch_name }})  -desc 'Testing started' -rid ${{ github.run_id }} -state 'pending' -context 'test' -token 'PLACEHOLDER'
         continue-on-error: true
 
       - name: Run testsuite
