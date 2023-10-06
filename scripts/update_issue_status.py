@@ -36,13 +36,19 @@ def parse_arguments():
         type=str,
         help="target state",
     )
+    parser.add_argument(
+        "-repo",
+        required=True,
+        type=str,
+        help="repo to pull the issues from",
+    )
     return parser.parse_args()
     
-def get_issue(token: str, patch: str, check: str):
+def get_issue(token: str, patch: str, check: str, repo: str):
     params = {"Accept": "application/vnd.github+json",
               "Authorization": f"token {token}",
               "X-GitHub-Api-Version": "2022-11-28"}
-    url = "https://api.github.com/repos/ewlu/riscv-gnu-toolchain/issues?page=1&q=is%3Aissue&state=all"
+    url = f"https://api.github.com/repos/{repo}/issues?page=1&q=is%3Aissue&state=all"
     r = requests.get(url, params)
     issues = json.loads(r.text)
     found_issue = None
@@ -77,7 +83,7 @@ def build_new_issue(status: Dict[str, str], patch: str, check: str):
 
 def main():
     args = parse_arguments()
-    issue = get_issue(args.token, args.patch, args.check)
+    issue = get_issue(args.token, args.patch, args.check, args.repo)
     if issue is None:
         status = {args.target: args.state}
     else:
