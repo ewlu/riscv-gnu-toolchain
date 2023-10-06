@@ -34,6 +34,7 @@ jobs:
           export title="${{ github.event.issue.title }}"
           export CHECK=$(echo ${title%% *} | tr '[:upper:]' '[:lower:]')
           echo $CHECK
+          if [ $CHECK == 'testsuite' ]; then export CHECK=test; fi
           echo "check=$CHECK" >> $GITHUB_OUTPUT
 
       - name: Download patch

@@ -74,7 +74,7 @@ def create_data(desc: str, issue: str, rid: str, state: str, context: str):
     data = {
         "state": state,
         "target_url": target_url,
-        "context": f"toolchain-ci-rivos-{context}",
+        "context": f"riscv_gnu_toolchain_{context}",
         "description": desc
     }
     return data
