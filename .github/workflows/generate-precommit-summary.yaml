@@ -307,19 +307,19 @@ jobs:
         if: ${{ contains(steps.issue-labels.outputs.issue_labels, 'build-failure') || contains(steps.issue-labels.outputs.issue_labels, 'testsuite-failure') || contains(steps.issue-labels.outputs.issue_labels, 'new-regressions') }}
         id: report-failure
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'Testing failed' -iid ${{ steps.create-issue.outputs.number }} -state 'fail' -context 'test' -token ${{ secrets.PATCHWORK_API }}
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'Testing failed' -iid ${{ steps.create-issue.outputs.number }} -state 'fail' -context 'test' -token 'PLACEHOLDER'
         continue-on-error: true
 
       - name: Report Warning
         if: ${{ steps.report-failure.outcome == 'skipped' && inputs.build_only == 'true' }}
         id: report-warning
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'Build only. No tests ran' -iid ${{ steps.create-issue.outputs.number }} -state 'warning' -context 'test' -token ${{ secrets.PATCHWORK_API }}
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'Build only. No tests ran' -iid ${{ steps.create-issue.outputs.number }} -state 'warning' -context 'test' -token 'PLACEHOLDER'
         continue-on-error: true
 
       - name: Report Success
         if: ${{ steps.report-failure.outcome == 'skipped' && steps.report-warning.outcome == 'skipped' }}
         id: report-success
         run: |
-          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'Testing passed' -iid ${{ steps.create-issue.outputs.number }} -state 'success' -context 'test' -token ${{ secrets.PATCHWORK_API }}
+          python scripts/post_check_to_patchworks.py -pid $(tail -n 1 ./patches/${{ inputs.patch_name }} -desc 'Testing passed' -iid ${{ steps.create-issue.outputs.number }} -state 'success' -context 'test' -token 'PLACEHOLDER'
         continue-on-error: true
