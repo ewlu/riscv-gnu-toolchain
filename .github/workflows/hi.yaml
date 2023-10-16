@@ -25,12 +25,17 @@ jobs:
 
       - name: say hi
         run: |
-          echo $'something\n${{ inputs.multilib }}\n' > out
-          cat out
-          printf "something\n${{ inputs.target }}\n" > out
-          cat out
-      
-        
+          printf -- "---\ntitle: Test issue\n---\n" > issue.md
+          printf "\`\`\`\nthis is { a test\n\`\`\`\n" >> issue.md
+          
+      - name: Create or update summary issue
+        uses: JasonEtco/create-an-issue@v2
+        id: create-issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          filename: issue.md
+          update_existing: true
 
     outputs:
       build_success: ${{ steps.build-success.outputs.build_success }}
