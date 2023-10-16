@@ -26,8 +26,8 @@ jobs:
       - name: say hi
         run: |
           printf -- "---\ntitle: Test issue\n---\n" > issue.md
-          printf "\`\`\`\nthis is { a test\n\`\`\`\n" >> issue.md
-          
+          printf "\`\`\`\nthis:is()\n{\n  /* a test\n\`\`\`\n" >> issue.md
+
       - name: Create or update summary issue
         uses: JasonEtco/create-an-issue@v2
         id: create-issue
