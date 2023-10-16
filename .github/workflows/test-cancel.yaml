@@ -16,11 +16,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mode: [newlib, linux]
+        mode: [newlib]
         target:
           [
             rv32gcv-ilp32d, # rv32 vector
-            rv64gcv-lp64d, # rv64 vector
           ]
         multilib: [non-multilib]
     uses: ./.github/workflows/hi.yaml
